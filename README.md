@@ -1,5 +1,8 @@
 # 论文学习平台
 
+## 🌐 在线访问
+**请访问：[https://shijiesong01.github.io/paper-learn/offline/paper_search_static.html](https://shijiesong01.github.io/paper-learn/offline/paper_search_static.html)**
+
 一个基于Node.js的学术论文管理和学习平台，帮助研究者系统化地整理、分析和学习学术论文。
 
 ## 1. 核心功能
@@ -17,7 +20,7 @@
 
 **论文录入**：输入论文ID，填写基本信息（标题、作者、期刊、年份、标签、摘要等），录入分析方法（问题描述、核心思想、算法细节、创新点），记录实验数据（数据集、评估指标、结果分析、开源代码），添加个人学习记录（复现情况、学习灵感）。
 
-**数据管理**：支持导入现有数据、保存到`notes/total.json`、生成目录结构到`notes/structure.txt`。建议将PDF文件按分类存放在`papers/`目录下。
+**数据管理**：支持导入现有数据、保存到`notes/total.json`、生成目录结构到`notes/structure.txt`。建议将PDF文件按分类存放在`papers/`目录下。点击生成目录可更换目录总体情况。
 
 ### （二）静态网站服务
 **本地测试**：使用`python -m http.server 8000`或`npx http-server`启动服务器，访问`http://localhost:8000/offline/paper_search_static.html`。
