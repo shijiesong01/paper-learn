@@ -98,7 +98,7 @@
         "strengths": "1.introduce tools for extracting data from and interacting (with Lean)\n2.develop ReProver, the first retrievalaugmented language model for theorem proving.\n3.construct a challenging benchmark for learning-based theorem proving and use it to validate the effectiveness of ReProver.\n4.facilitate open research on LLMs for theorem proving by releasing our data, model, and code.",
         "weaknesses": "",
         "open_source": {
-          "link": "",
+          "link": "https://github.com/lean-dojo/LeanDojo; https://github.com/lean-dojo/ReProver",
           "code_available": true
         }
       },
