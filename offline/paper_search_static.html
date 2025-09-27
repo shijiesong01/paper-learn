@@ -188,7 +188,7 @@
                         <i class="fa fa-balance-scale mr-2"></i>高级对比
                     </button>
                     <button id="advanced-search-btn" class="bg-accent text-white px-4 py-2 rounded-md hover:bg-accent/90 transition-colors duration-200">
-                        <i class="fa fa-search-plus mr-2"></i>高级检索
+                        <i class="fa fa-search mr-2"></i>高级检索
                     </button>
                 </div>
             </div>
@@ -262,16 +262,32 @@
         // 加载数据 - 完全静态版本
         async function loadData() {
             try {
-                // 加载论文数据 - 直接读取本地JSON文件
-                const papersResponse = await fetch('../notes/total.json');
+                // 加载论文数据 - 直接读取本地JSON文件，添加时间戳防止缓存
+                const timestamp = new Date().getTime();
+                const papersResponse = await fetch(`../notes/total.json?t=${timestamp}`, {
+                    cache: 'no-cache',
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    }
+                });
                 if (!papersResponse.ok) {
                     throw new Error('无法加载论文数据，请确保 notes/total.json 文件存在');
                 }
                 const papersResult = await papersResponse.json();
                 papersData = papersResult.papers || {};
+                console.log('数据加载成功，论文数量:', Object.keys(papersData).length);
 
-                // 加载目录结构 - 直接读取本地文本文件
-                const structureResponse = await fetch('../notes/structure.txt');
+                // 加载目录结构 - 直接读取本地文本文件，添加时间戳防止缓存
+                const structureResponse = await fetch(`../notes/structure.txt?t=${timestamp}`, {
+                    cache: 'no-cache',
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    }
+                });
                 if (!structureResponse.ok) {
                     throw new Error('无法加载目录结构，请确保 notes/structure.txt 文件存在');
                 }
@@ -407,7 +423,27 @@
                 return;
             }
 
-            papers.forEach(([paperId, paper]) => {
+            // 过滤掉模板数据
+            const validPapers = papers.filter(([paperId, paper]) => {
+                const title = paper.basic?.title || '';
+                const authors = paper.basic?.authors || '';
+                const abstract = paper.basic?.abstract || '';
+                
+                // 排除包含模板文本的论文
+                const templateKeywords = ['请输入', '请选择', '无', '未知', '样例'];
+                return !templateKeywords.some(keyword => 
+                    title.includes(keyword) || 
+                    authors.includes(keyword) || 
+                    abstract.includes(keyword)
+                );
+            });
+
+            if (validPapers.length === 0) {
+                papersList.innerHTML = '<p class="text-gray-500 text-sm">暂无论文数据</p>';
+                return;
+            }
+
+            validPapers.forEach(([paperId, paper]) => {
                 const paperCard = document.createElement('div');
                 paperCard.className = 'paper-card flex items-center justify-between';
                 paperCard.dataset.paperId = paperId;
@@ -524,23 +560,23 @@
                     </h3>
                     <div class="paper-field">
                         <div class="paper-field-label">标题</div>
-                        <div class="paper-field-content">${basic.title || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(basic.title || '无')}</div>
                     </div>
                     <div class="paper-field">
                         <div class="paper-field-label">作者</div>
-                        <div class="paper-field-content">${Array.isArray(basic.authors) ? basic.authors.join(', ') : basic.authors || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(Array.isArray(basic.authors) ? basic.authors.join(', ') : basic.authors || '无')}</div>
                     </div>
                     <div class="paper-field">
                         <div class="paper-field-label">期刊/会议</div>
-                        <div class="paper-field-content">${basic.journal_conference || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(basic.journal_conference || '无')}</div>
                     </div>
                     <div class="paper-field">
                         <div class="paper-field-label">年份</div>
-                        <div class="paper-field-content">${basic.year || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(basic.year || '无')}</div>
                     </div>
                     <div class="paper-field">
                         <div class="paper-field-label">引用数</div>
-                        <div class="paper-field-content">${basic.citation_count || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(basic.citation_count || '无')}</div>
                     </div>
                 </div>
             `;
@@ -554,15 +590,15 @@
                     </h3>
                     <div class="paper-field">
                         <div class="paper-field-label">标签</div>
-                        <div class="paper-field-content">${Array.isArray(basic.tags) ? basic.tags.join(', ') : basic.tags || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(Array.isArray(basic.tags) ? basic.tags.join(', ') : basic.tags || '无')}</div>
                     </div>
                     <div class="paper-field">
                         <div class="paper-field-label">文件地址</div>
-                        <div class="paper-field-content">${basic.file_address || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(basic.file_address || '无')}</div>
                     </div>
                     <div class="paper-field">
                         <div class="paper-field-label">链接</div>
-                        <div class="paper-field-content">${basic.link ? `<a href="${basic.link}" target="_blank" class="text-blue-600 hover:underline">${basic.link}</a>` : '无'}</div>
+                        <div class="paper-field-content">${basic.link ? `<a href="${basic.link}" target="_blank" class="text-blue-600 hover:underline">${formatTextWithLineBreaks(basic.link)}</a>` : '无'}</div>
                     </div>
                 </div>
                 <div class="paper-section">
@@ -571,11 +607,11 @@
                     </h3>
                     <div class="paper-field">
                         <div class="paper-field-label">创建日期</div>
-                        <div class="paper-field-content">${basic.created_date || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(basic.created_date || '无')}</div>
                     </div>
                     <div class="paper-field">
                         <div class="paper-field-label">更新日期</div>
-                        <div class="paper-field-content">${basic.last_updated || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(basic.last_updated || '无')}</div>
                     </div>
                 </div>
             `;
@@ -590,7 +626,7 @@
                 abstractSection.className = 'paper-section';
                 abstractSection.innerHTML = `
                     <h3 class="paper-section-title">
-                        <i class="fa fa-file-text-o text-orange-500"></i>摘要
+                        <i class="fa fa-file-text text-orange-500"></i>摘要
                     </h3>
                     <div class="paper-field-content">${basic.abstract}</div>
                 `;
@@ -613,19 +649,19 @@
                     </h3>
                     <div class="paper-field">
                         <div class="paper-field-label">问题描述</div>
-                        <div class="paper-field-content">${method.problem || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(method.problem || '无')}</div>
                     </div>
                     <div class="paper-field">
                         <div class="paper-field-label">局限性</div>
-                        <div class="paper-field-content">${method.limitations || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(method.limitations || '无')}</div>
                     </div>
                 </div>
                 <div class="paper-section">
                     <h3 class="paper-section-title">
-                        <i class="fa fa-lightbulb-o text-yellow-500"></i>核心思想
+                        <i class="fa fa-lightbulb text-yellow-500"></i>核心思想
                     </h3>
                     <div class="paper-field">
-                        <div class="paper-field-content">${method.core_idea || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(method.core_idea || '无')}</div>
                     </div>
                 </div>
             `;
@@ -639,11 +675,11 @@
                     </h3>
                     <div class="paper-field">
                         <div class="paper-field-label">算法细节</div>
-                        <div class="paper-field-content">${method.algorithm || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(method.algorithm || '无')}</div>
                     </div>
                     <div class="paper-field">
                         <div class="paper-field-label">创新点</div>
-                        <div class="paper-field-content">${method.novelties || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(method.novelties || '无')}</div>
                     </div>
                 </div>
             `;
@@ -653,7 +689,7 @@
             container.appendChild(grid);
 
             // 核心图片部分
-            if (method.core_pic) {
+            if (method.core_pic && method.core_pic.trim() !== '') {
                 const imageSection = document.createElement('div');
                 imageSection.className = 'paper-section';
                 imageSection.innerHTML = `
@@ -661,7 +697,11 @@
                         <i class="fa fa-image text-green-500"></i>核心图片
                     </h3>
                     <div class="paper-image-container">
-                        <img src="../notes/pics/${method.core_pic}" alt="核心图片" class="paper-image" onerror="this.style.display='none'">
+                        <img src="../notes/pics/${method.core_pic}" 
+                             alt="核心图片" 
+                             class="paper-image" 
+                             onerror="this.parentElement.innerHTML='<p class=\'text-gray-500 text-sm\'>图片加载失败: ${method.core_pic}</p>'"
+                             onload="console.log('图片加载成功:', '${method.core_pic}')">
                     </div>
                 `;
                 container.appendChild(imageSection);
@@ -683,19 +723,19 @@
                     </h3>
                     <div class="paper-field">
                         <div class="paper-field-label">数据集</div>
-                        <div class="paper-field-content">${Array.isArray(experiments.datasets) ? experiments.datasets.join(', ') : experiments.datasets || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(Array.isArray(experiments.datasets) ? experiments.datasets.join(', ') : experiments.datasets || '无')}</div>
                     </div>
                     <div class="paper-field">
                         <div class="paper-field-label">评估指标</div>
-                        <div class="paper-field-content">${Array.isArray(experiments.metrics) ? experiments.metrics.join(', ') : experiments.metrics || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(Array.isArray(experiments.metrics) ? experiments.metrics.join(', ') : experiments.metrics || '无')}</div>
                     </div>
                 </div>
                 <div class="paper-section">
                     <h3 class="paper-section-title">
-                        <i class="fa fa-chart-line text-green-500"></i>实验结果
+                        <i class="fa fa-bar-chart text-green-500"></i>实验结果
                     </h3>
                     <div class="paper-field">
-                        <div class="paper-field-content">${experiments.results || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(experiments.results || '无')}</div>
                     </div>
                 </div>
             `;
@@ -708,7 +748,7 @@
                         <i class="fa fa-flask text-purple-500"></i>其他实验
                     </h3>
                     <div class="paper-field">
-                        <div class="paper-field-content">${Array.isArray(experiments.other_experiments) ? experiments.other_experiments.join(', ') : experiments.other_experiments || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(Array.isArray(experiments.other_experiments) ? experiments.other_experiments.join(', ') : experiments.other_experiments || '无')}</div>
                     </div>
                 </div>
                 <div class="paper-section">
@@ -717,11 +757,11 @@
                     </h3>
                     <div class="paper-field">
                         <div class="paper-field-label">优势</div>
-                        <div class="paper-field-content">${experiments.strengths || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(experiments.strengths || '无')}</div>
                     </div>
                     <div class="paper-field">
                         <div class="paper-field-label">局限</div>
-                        <div class="paper-field-content">${experiments.weaknesses || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(experiments.weaknesses || '无')}</div>
                     </div>
                 </div>
             `;
@@ -765,7 +805,7 @@
                         <i class="fa fa-repeat text-blue-500"></i>复现情况
                     </h3>
                     <div class="paper-field">
-                        <div class="paper-field-content">${myStudy.reproduction || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(myStudy.reproduction || '无')}</div>
                     </div>
                 </div>
             `;
@@ -775,10 +815,10 @@
             rightCol.innerHTML = `
                 <div class="paper-section">
                     <h3 class="paper-section-title">
-                        <i class="fa fa-lightbulb-o text-yellow-500"></i>学习灵感
+                        <i class="fa fa-lightbulb text-yellow-500"></i>学习灵感
                     </h3>
                     <div class="paper-field">
-                        <div class="paper-field-content">${Array.isArray(myStudy.inspiration) ? myStudy.inspiration.join(', ') : myStudy.inspiration || '无'}</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(Array.isArray(myStudy.inspiration) ? myStudy.inspiration.join(', ') : myStudy.inspiration || '无')}</div>
                     </div>
                 </div>
             `;
@@ -1012,16 +1052,23 @@
 
         // 绑定事件
         function bindEvents() {
-            // 更新按钮
+            // 更新按钮 - 强制刷新数据
             document.getElementById('refresh-btn').addEventListener('click', async () => {
                 try {
+                    showLoading('正在更新数据...');
+                    // 清除可能的缓存
+                    if ('caches' in window) {
+                        const cacheNames = await caches.keys();
+                        await Promise.all(cacheNames.map(name => caches.delete(name)));
+                    }
                     await loadData();
                     renderPaperTree();
                     renderPapersList();
                     showHome();
-                    showSuccess('数据已更新');
+                    showSuccess('数据已强制更新');
                 } catch (error) {
-                    showError('更新失败: ' + error.message);
+                    console.error('更新失败:', error);
+                    showError('数据更新失败: ' + error.message);
                 }
             });
 
@@ -1086,6 +1133,11 @@
 
         // 显示成功消息
         function showSuccess(message) {
+            // 移除loading消息
+            const loadingMsg = document.getElementById('loading-message');
+            if (loadingMsg) {
+                document.body.removeChild(loadingMsg);
+            }
             // 简单的成功提示，可以后续优化
             alert(message);
         }
@@ -1094,6 +1146,21 @@
         function showError(message) {
             // 简单的错误提示，可以后续优化
             alert(message);
+        }
+
+        // 显示加载信息
+        function showLoading(message) {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'fixed top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded shadow-lg z-50';
+            loadingDiv.textContent = message;
+            loadingDiv.id = 'loading-message';
+            document.body.appendChild(loadingDiv);
+        }
+
+        // 处理文本中的换行符，将\n转换为<br>
+        function formatTextWithLineBreaks(text) {
+            if (!text || typeof text !== 'string') return '';
+            return text.replace(/\n/g, '<br>');
         }
 
         // 页面加载完成后初始化

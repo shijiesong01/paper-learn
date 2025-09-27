@@ -790,8 +790,15 @@
 
         // 渲染所有板块
         function renderAllSections(data) {
+            // 处理metadata字段，将其合并到basic中
+            const basicData = { ...initialData.basic, ...(data.basic || {}) };
+            if (data.metadata) {
+                basicData.created_date = data.metadata?.created_date || basicData.created_date;
+                basicData.last_updated = data.metadata?.last_updated || basicData.last_updated;
+            }
+            
             // 渲染各个板块
-            renderSection(data.basic || initialData.basic, 'basic', 'basic-container');
+            renderSection(basicData, 'basic', 'basic-container');
             renderSection(data.method || initialData.method, 'method', 'method-container');
             renderSection(data.experiments || initialData.experiments, 'experiments', 'experiments-container');
             renderSection(data.my_study || initialData.my_study, 'my_study', 'mystudy-container');
