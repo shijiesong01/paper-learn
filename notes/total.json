@@ -169,18 +169,26 @@
     "Autoformalizing Euclidean Geometry": {
       "basic": {
         "title": "Autoformalizing Euclidean Geometry",
-        "authors": "",
-        "journal_conference": "",
-        "year": "",
-        "month": "",
-        "citation_count": "",
+        "authors": "Logan Murphy, Kaiyu Yang, Jialiang Sun, Zhaoyu Li, Anima Anandkumar, Xujie Si",
+        "journal_conference": "ICML",
+        "year": "2024",
+        "month": "5",
+        "citation_count": "25",
         "tags": [
-          ""
+          "autoformalization",
+          "Euclidean geometry",
+          "neuro-symbolic framework",
+          "theorem prover",
+          "LLM",
+          "LeanEuclid",
+          "benchmark"
         ],
         "file_address": "AI4Math\\AlphaGeometry\\Autoformalizing Euclidean Geometry.pdf",
-        "link": "",
-        "abstract": "",
-        "summary": ""
+        "link": "https://arxiv.org/abs/2405.17216",
+        "abstract": "Autoformalization involves automatically translating informal math into formal theorems and proofs that are machine-verifiable. Euclidean geometry provides an interesting and controllable domain for studying autoformalization. In this paper, we introduce a neuro-symbolic framework for autoformalizing Euclidean geometry, which combines domain knowledge, SMT solvers, and large language models (LLMs). One challenge in Euclidean geometry is that informal proofs rely on diagrams, leaving gaps in texts that are hard to formalize. To address this issue, we use theorem provers to fill in such diagrammatic information automatically, so that the LLM only needs to autoformalize the explicit textual steps, making it easier for the model. We also provide automatic semantic evaluation for autoformalized theorem statements. We construct LeanEuclid, an autoformalization benchmark consisting of problems from Euclid’s Elements and the UniGeo dataset formalized in the Lean proof assistant. Experiments with GPT-4 and GPT-4V show the capability and limitations of state-of-the-art LLMs on autoformalizing geometry problems. The data and code are available at https://github. com/loganrjmurphy/LeanEuclid.",
+        "summary": "",
+        "created_date": "2025/9/27",
+        "last_updated": "2025/9/27"
       },
       "method": {
         "problem": "",
@@ -204,7 +212,7 @@
         "strengths": "",
         "weaknesses": "",
         "open_source": {
-          "link": "",
+          "link": "https://github.com/loganrjmurphy/LeanEuclid",
           "code_available": true
         }
       },
@@ -213,10 +221,6 @@
         "inspiration": [
           ""
         ]
-      },
-      "metadata": {
-        "created_date": "",
-        "last_updated": ""
       }
     },
     "Goedel-prover-v2: Scaling formal theorem proving with scaffolded data synthesis and self-correction": {
@@ -389,18 +393,20 @@
     "Solving olympiad geometry without human demonstrations": {
       "basic": {
         "title": "Solving olympiad geometry without human demonstrations",
-        "authors": "",
-        "journal_conference": "",
-        "year": "",
-        "month": "",
-        "citation_count": "",
+        "authors": "Trieu H. Trinh, Yuhuai Wu, Quoc V. Le, He He, Thang Luong",
+        "journal_conference": "Nature",
+        "year": "24",
+        "month": "1",
+        "citation_count": "663",
         "tags": [
           ""
         ],
         "file_address": "AI4Math\\AlphaGeometry\\Trinh 等 - 2024 - Solving olympiad geometry without human demonstrat.pdf",
-        "link": "",
-        "abstract": "",
-        "summary": ""
+        "link": "https://www.nature.com/articles/s41586-023-06747-5",
+        "abstract": "Proving mathematical theorems at the olympiad level represents a notable milestone in human-level automated reasoning owing to their reputed difficulty among the world’s best talents in pre-university mathematics. Current machine-learning approaches, however, are not applicable to most mathematical domains owing to the high cost of translating human proofs into machine-verifiable format. The problem is even worse for geometry because of its unique translation challenges, resulting in severe scarcity of training data. We propose AlphaGeometry, a theorem prover for Euclidean plane geometry that sidesteps the need for human demonstrations by synthesizing millions of theorems and proofs across different levels of complexity. AlphaGeometry is a neuro-symbolic system that uses a neural language model, trained from scratch on our large-scale synthetic data, to guide a symbolic deduction engine through infinite branching points in challenging problems. On a test set of 30 latest olympiad-level problems, AlphaGeometry solves 25, outperforming the previous best method that only solves ten problems and approaching the performance of an average International Mathematical Olympiad (IMO) gold medallist. Notably, AlphaGeometry produces human-readable proofs, solves all geometry problems in the IMO 2000 and 2015 under human expert evaluation and discovers a generalized version of a translated IMO theorem in 2004.",
+        "summary": "",
+        "created_date": "2025/9/27",
+        "last_updated": "2025/9/27"
       },
       "method": {
         "problem": "",
@@ -425,7 +431,7 @@
         "weaknesses": "",
         "open_source": {
           "link": "",
-          "code_available": true
+          "code_available": false
         }
       },
       "my_study": {
@@ -433,10 +439,6 @@
         "inspiration": [
           ""
         ]
-      },
-      "metadata": {
-        "created_date": "",
-        "last_updated": ""
       }
     },
     "Seed-Prover: Deep and Broad Reasoning for Automated Theorem Proving": {
