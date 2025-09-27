@@ -1,0 +1,576 @@
+{
+  "papers": {
+    "样例": {
+      "basic": {
+        "title": "请输入论文标题",
+        "authors": "请输入作者",
+        "journal_conference": "请输入期刊/会议名称",
+        "year": "请输入年份",
+        "month": "请输入月份",
+        "citation_count": "请输入引用数",
+        "tags": [
+          "请输入标签"
+        ],
+        "file_address": "请输入./papers/之后的目录地址",
+        "link": "请输入论文网络链接",
+        "abstract": "请输入论文摘要"
+      },
+      "method": {
+        "problem": "文章要解决什么问题",
+        "limitations": "现有方法有何局限",
+        "core_idea": "文章核心思想",
+        "algorithm": "文章关键模型/算法细节",
+        "novelties": "文章创新点",
+        "core_pic": "请输入图片文件名（如：图片1.jpg）"
+      },
+      "experiments": {
+        "datasets": [
+          "请输入数据集"
+        ],
+        "metrics": [
+          "请输入数据集指标"
+        ],
+        "results": "请输入实验结果描述",
+        "other_experiments": [
+          "请输入其他实验细节"
+        ],
+        "strengths": "请输入本文优势",
+        "weaknesses": "请输入本文局限",
+        "open_source": {
+          "link": "请输入开源代码链接",
+          "code_available": true
+        }
+      },
+      "my_study": {
+        "reproduction": "请输入复现情况",
+        "inspiration": [
+          "请输入灵感"
+        ]
+      },
+      "metadata": {
+        "created_date": "请输入创建日期",
+        "last_updated": "请输入更新日期"
+      }
+    },
+    "LeanDojo: Theorem Proving with Retrieval-Augmented Language Models": {
+      "basic": {
+        "title": "LeanDojo: Theorem Proving with Retrieval-Augmented Language Models",
+        "authors": "",
+        "journal_conference": "",
+        "year": "",
+        "month": "",
+        "citation_count": "",
+        "tags": [
+          ""
+        ],
+        "file_address": "AI4Math\\Lean\\Yang 等 - LeanDojo Theorem Proving with Retrieval-Augmented.pdf",
+        "link": "",
+        "abstract": ""
+      },
+      "method": {
+        "problem": "",
+        "limitations": "",
+        "core_idea": "",
+        "algorithm": "",
+        "novelties": "",
+        "core_pic": ""
+      },
+      "experiments": {
+        "datasets": [
+          ""
+        ],
+        "metrics": [
+          ""
+        ],
+        "results": "",
+        "other_experiments": [
+          ""
+        ],
+        "strengths": "",
+        "weaknesses": "",
+        "open_source": {
+          "link": "",
+          "code_available": true
+        }
+      },
+      "my_study": {
+        "reproduction": "",
+        "inspiration": [
+          ""
+        ]
+      },
+      "metadata": {
+        "created_date": "",
+        "last_updated": ""
+      }
+    },
+    "Lean Workbook: A large-scale Lean problem set formalized from natural language math problems": {
+      "basic": {
+        "title": "Lean Workbook: A large-scale Lean problem set formalized from natural language math problems",
+        "authors": "",
+        "journal_conference": "",
+        "year": "",
+        "month": "",
+        "citation_count": "",
+        "tags": [
+          ""
+        ],
+        "file_address": "AI4Math\\Lean\\Ying 等 - 2025 - Lean Workbook A large-scale Lean problem set form.pdf",
+        "link": "",
+        "abstract": ""
+      },
+      "method": {
+        "problem": "",
+        "limitations": "",
+        "core_idea": "",
+        "algorithm": "",
+        "novelties": "",
+        "core_pic": ""
+      },
+      "experiments": {
+        "datasets": [
+          ""
+        ],
+        "metrics": [
+          ""
+        ],
+        "results": "",
+        "other_experiments": [
+          ""
+        ],
+        "strengths": "",
+        "weaknesses": "",
+        "open_source": {
+          "link": "",
+          "code_available": true
+        }
+      },
+      "my_study": {
+        "reproduction": "",
+        "inspiration": [
+          ""
+        ]
+      },
+      "metadata": {
+        "created_date": "",
+        "last_updated": ""
+      }
+    },
+    "Autoformalizing Euclidean Geometry": {
+      "basic": {
+        "title": "Autoformalizing Euclidean Geometry",
+        "authors": "",
+        "journal_conference": "",
+        "year": "",
+        "month": "",
+        "citation_count": "",
+        "tags": [
+          ""
+        ],
+        "file_address": "AI4Math\\AlphaGeometry\\Autoformalizing Euclidean Geometry.pdf",
+        "link": "",
+        "abstract": ""
+      },
+      "method": {
+        "problem": "",
+        "limitations": "",
+        "core_idea": "",
+        "algorithm": "",
+        "novelties": "",
+        "core_pic": ""
+      },
+      "experiments": {
+        "datasets": [
+          ""
+        ],
+        "metrics": [
+          ""
+        ],
+        "results": "",
+        "other_experiments": [
+          ""
+        ],
+        "strengths": "",
+        "weaknesses": "",
+        "open_source": {
+          "link": "",
+          "code_available": true
+        }
+      },
+      "my_study": {
+        "reproduction": "",
+        "inspiration": [
+          ""
+        ]
+      },
+      "metadata": {
+        "created_date": "",
+        "last_updated": ""
+      }
+    },
+    "GOEDEL-PROVER-V2: SCALING FORMAL THEOREM PROVING WITH SCAFFOLDED DATA SYNTHESIS AND SELF-CORRECTION": {
+      "basic": {
+        "title": "GOEDEL-PROVER-V2: SCALING FORMAL THEOREM PROVING WITH SCAFFOLDED DATA SYNTHESIS AND SELF-CORRECTION",
+        "authors": "",
+        "journal_conference": "",
+        "year": "",
+        "month": "",
+        "citation_count": "",
+        "tags": [
+          ""
+        ],
+        "file_address": "AI4Math\\Lean\\Lin 等 - 2025 - Goedel-Prover-V2 Scaling Formal Theorem Proving w.pdf",
+        "link": "",
+        "abstract": ""
+      },
+      "method": {
+        "problem": "",
+        "limitations": "",
+        "core_idea": "",
+        "algorithm": "",
+        "novelties": "",
+        "core_pic": ""
+      },
+      "experiments": {
+        "datasets": [
+          ""
+        ],
+        "metrics": [
+          ""
+        ],
+        "results": "",
+        "other_experiments": [
+          ""
+        ],
+        "strengths": "",
+        "weaknesses": "",
+        "open_source": {
+          "link": "",
+          "code_available": true
+        }
+      },
+      "my_study": {
+        "reproduction": "",
+        "inspiration": [
+          ""
+        ]
+      },
+      "metadata": {
+        "created_date": "",
+        "last_updated": ""
+      }
+    },
+    "LEAN-GitHub: Compiling GitHub LEAN repositories for a versatile LEAN prover": {
+      "basic": {
+        "title": "LEAN-GitHub: Compiling GitHub LEAN repositories for a versatile LEAN prover",
+        "authors": "",
+        "journal_conference": "",
+        "year": "",
+        "month": "",
+        "citation_count": "",
+        "tags": [
+          ""
+        ],
+        "file_address": "AI4Math\\Lean\\Wu 等 - 2024 - LEAN-GitHub Compiling GitHub LEAN repositories fo.pdf",
+        "link": "",
+        "abstract": ""
+      },
+      "method": {
+        "problem": "",
+        "limitations": "",
+        "core_idea": "",
+        "algorithm": "",
+        "novelties": "",
+        "core_pic": ""
+      },
+      "experiments": {
+        "datasets": [
+          ""
+        ],
+        "metrics": [
+          ""
+        ],
+        "results": "",
+        "other_experiments": [
+          ""
+        ],
+        "strengths": "",
+        "weaknesses": "",
+        "open_source": {
+          "link": "",
+          "code_available": true
+        }
+      },
+      "my_study": {
+        "reproduction": "",
+        "inspiration": [
+          ""
+        ]
+      },
+      "metadata": {
+        "created_date": "",
+        "last_updated": ""
+      }
+    },
+    "Towards Large Language Models as Copilots for Theorem Proving in Lean": {
+      "basic": {
+        "title": "Towards Large Language Models as Copilots for Theorem Proving in Lean",
+        "authors": "",
+        "journal_conference": "",
+        "year": "",
+        "month": "",
+        "citation_count": "",
+        "tags": [
+          ""
+        ],
+        "file_address": "AI4Math\\Lean\\Song 等 - Towards Large Language Models as Copilots for Theo.pdf",
+        "link": "",
+        "abstract": ""
+      },
+      "method": {
+        "problem": "",
+        "limitations": "",
+        "core_idea": "",
+        "algorithm": "",
+        "novelties": "",
+        "core_pic": ""
+      },
+      "experiments": {
+        "datasets": [
+          ""
+        ],
+        "metrics": [
+          ""
+        ],
+        "results": "",
+        "other_experiments": [
+          ""
+        ],
+        "strengths": "",
+        "weaknesses": "",
+        "open_source": {
+          "link": "",
+          "code_available": true
+        }
+      },
+      "my_study": {
+        "reproduction": "",
+        "inspiration": [
+          ""
+        ]
+      },
+      "metadata": {
+        "created_date": "",
+        "last_updated": ""
+      }
+    },
+    "Solving olympiad geometry without human demonstrations": {
+      "basic": {
+        "title": "Solving olympiad geometry without human demonstrations",
+        "authors": "",
+        "journal_conference": "",
+        "year": "",
+        "month": "",
+        "citation_count": "",
+        "tags": [
+          ""
+        ],
+        "file_address": "AI4Math\\AlphaGeometry\\Trinh 等 - 2024 - Solving olympiad geometry without human demonstrat.pdf",
+        "link": "",
+        "abstract": ""
+      },
+      "method": {
+        "problem": "",
+        "limitations": "",
+        "core_idea": "",
+        "algorithm": "",
+        "novelties": "",
+        "core_pic": ""
+      },
+      "experiments": {
+        "datasets": [
+          ""
+        ],
+        "metrics": [
+          ""
+        ],
+        "results": "",
+        "other_experiments": [
+          ""
+        ],
+        "strengths": "",
+        "weaknesses": "",
+        "open_source": {
+          "link": "",
+          "code_available": true
+        }
+      },
+      "my_study": {
+        "reproduction": "",
+        "inspiration": [
+          ""
+        ]
+      },
+      "metadata": {
+        "created_date": "",
+        "last_updated": ""
+      }
+    },
+    "Seed-Prover: Deep and Broad Reasoning for Automated Theorem Proving": {
+      "basic": {
+        "title": "Seed-Prover: Deep and Broad Reasoning for Automated Theorem Proving",
+        "authors": "",
+        "journal_conference": "",
+        "year": "",
+        "month": "",
+        "citation_count": "",
+        "tags": [
+          ""
+        ],
+        "file_address": "AI4Math\\Lean\\Chen 等 - 2025 - Seed-Prover Deep and Broad Reasoning for Automate.pdf",
+        "link": "",
+        "abstract": ""
+      },
+      "method": {
+        "problem": "",
+        "limitations": "",
+        "core_idea": "",
+        "algorithm": "",
+        "novelties": "",
+        "core_pic": ""
+      },
+      "experiments": {
+        "datasets": [
+          ""
+        ],
+        "metrics": [
+          ""
+        ],
+        "results": "",
+        "other_experiments": [
+          ""
+        ],
+        "strengths": "",
+        "weaknesses": "",
+        "open_source": {
+          "link": "",
+          "code_available": true
+        }
+      },
+      "my_study": {
+        "reproduction": "",
+        "inspiration": [
+          ""
+        ]
+      },
+      "metadata": {
+        "created_date": "",
+        "last_updated": ""
+      }
+    },
+    "LEANAGENT: LIFELONG LEARNING FOR FORMAL THEOREM PROVING": {
+      "basic": {
+        "title": "LEANAGENT: LIFELONG LEARNING FOR FORMAL THEOREM PROVING",
+        "authors": "",
+        "journal_conference": "",
+        "year": "",
+        "month": "",
+        "citation_count": "",
+        "tags": [
+          ""
+        ],
+        "file_address": "AI4Math\\Lean\\Kumarappan 等 - 2025 - LeanAgent Lifelong Learning for Formal Theorem Pr.pdf",
+        "link": "",
+        "abstract": ""
+      },
+      "method": {
+        "problem": "",
+        "limitations": "",
+        "core_idea": "",
+        "algorithm": "",
+        "novelties": "",
+        "core_pic": ""
+      },
+      "experiments": {
+        "datasets": [
+          ""
+        ],
+        "metrics": [
+          ""
+        ],
+        "results": "",
+        "other_experiments": [
+          ""
+        ],
+        "strengths": "",
+        "weaknesses": "",
+        "open_source": {
+          "link": "",
+          "code_available": true
+        }
+      },
+      "my_study": {
+        "reproduction": "",
+        "inspiration": [
+          ""
+        ]
+      },
+      "metadata": {
+        "created_date": "",
+        "last_updated": ""
+      }
+    },
+    "TheoremLlama: Transforming General-Purpose LLMs into Lean4 Experts": {
+      "basic": {
+        "title": "TheoremLlama: Transforming General-Purpose LLMs into Lean4 Experts",
+        "authors": "",
+        "journal_conference": "",
+        "year": "",
+        "month": "",
+        "citation_count": "",
+        "tags": [
+          ""
+        ],
+        "file_address": "AI4Math\\Lean\\Wang 等 - 2024 - TheoremLlama Transforming General-Purpose LLMs in.pdf",
+        "link": "",
+        "abstract": ""
+      },
+      "method": {
+        "problem": "",
+        "limitations": "",
+        "core_idea": "",
+        "algorithm": "",
+        "novelties": "",
+        "core_pic": ""
+      },
+      "experiments": {
+        "datasets": [
+          ""
+        ],
+        "metrics": [
+          ""
+        ],
+        "results": "",
+        "other_experiments": [
+          ""
+        ],
+        "strengths": "",
+        "weaknesses": "",
+        "open_source": {
+          "link": "",
+          "code_available": true
+        }
+      },
+      "my_study": {
+        "reproduction": "",
+        "inspiration": [
+          ""
+        ]
+      },
+      "metadata": {
+        "created_date": "",
+        "last_updated": ""
+      }
+    }
+  }
+}

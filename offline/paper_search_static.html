@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论文搜索平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#10B981',
+                        secondary: '#3B82F6',
+                        accent: '#6366F1',
+                        neutral: '#1F2937',
+                        "base-100": '#FFFFFF',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .sidebar-item {
+                @apply flex items-center gap-2 px-2 py-1.5 text-gray-700 hover:bg-gray-50 cursor-pointer transition-colors duration-200 border-l-2 border-transparent text-sm;
+            }
+            .sidebar-item.active {
+                @apply bg-blue-50 text-blue-700 border-l-blue-500 font-medium;
+            }
+            .sidebar-item:hover {
+                @apply bg-gray-50;
+            }
+            .paper-card {
+                @apply bg-white rounded-lg shadow-sm p-4 mb-3 hover:shadow-md transition-all duration-200 cursor-pointer border border-gray-200 hover:border-gray-300;
+            }
+            .paper-card:hover {
+                @apply shadow-md;
+            }
+            .paper-card.selected {
+                @apply border-blue-300 bg-blue-50;
+            }
+            .section-title {
+                @apply text-lg font-semibold mb-3 text-gray-800 border-b border-gray-200 pb-2;
+            }
+            .field-group {
+                @apply mb-3;
+            }
+            .field-label {
+                @apply text-xs font-medium text-gray-500 mb-1 block;
+            }
+            .field-content {
+                @apply text-gray-700 text-sm;
+            }
+            .paper-detail-container {
+                @apply bg-white rounded-lg shadow-sm border border-gray-200;
+            }
+            .paper-header {
+                @apply bg-gray-50 px-6 py-4 border-b border-gray-200 rounded-t-lg;
+            }
+            .paper-title-large {
+                @apply text-xl font-bold text-gray-800 mb-2;
+            }
+            .paper-meta {
+                @apply text-sm text-gray-600;
+            }
+            .paper-tabs {
+                @apply flex border-b border-gray-200 bg-gray-50;
+            }
+            .paper-tab {
+                @apply px-4 py-3 text-sm font-medium text-gray-600 hover:text-gray-800 cursor-pointer border-b-2 border-transparent hover:border-gray-300 transition-colors duration-200;
+            }
+            .paper-tab.active {
+                @apply text-blue-600 border-blue-500 bg-white;
+            }
+            .paper-content {
+                @apply p-6;
+            }
+            .paper-section {
+                @apply mb-6;
+            }
+            .paper-section-title {
+                @apply text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2;
+            }
+            .paper-field {
+                @apply mb-3;
+            }
+            .paper-field-label {
+                @apply text-xs font-medium text-gray-500 mb-1;
+            }
+            .paper-field-content {
+                @apply text-sm text-gray-700;
+            }
+            .paper-image-container {
+                @apply bg-gray-50 rounded-lg p-4 border border-gray-200;
+            }
+            .paper-image {
+                @apply max-w-full h-auto rounded-lg shadow-sm;
+            }
+            .paper-grid {
+                @apply grid grid-cols-1 lg:grid-cols-2 gap-6;
+            }
+            .paper-grid-item {
+                @apply bg-gray-50 rounded-lg p-4 border border-gray-200;
+            }
+            .array-content {
+                @apply space-y-1;
+            }
+            .array-item {
+                @apply bg-gray-50 px-2 py-1 rounded text-sm;
+            }
+            .directory-item {
+                @apply flex items-center gap-2 px-2 py-1 text-gray-600 hover:bg-gray-50 cursor-pointer transition-colors duration-200 text-sm;
+            }
+            .directory-item:hover {
+                @apply text-gray-800;
+            }
+            .directory-children {
+                @apply ml-3 border-l border-gray-200;
+            }
+            .directory-children.collapsed {
+                @apply hidden;
+            }
+            .paper-title {
+                @apply text-sm font-semibold text-gray-800 mb-1 line-clamp-1;
+            }
+            .paper-authors {
+                @apply text-xs text-gray-600 mb-1 line-clamp-1;
+            }
+            .paper-abstract {
+                @apply text-xs text-gray-700 line-clamp-1;
+            }
+            .paper-year {
+                @apply text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded;
+            }
+            .tooltip {
+                @apply absolute z-10 bg-gray-900 text-white text-sm px-3 py-2 rounded shadow-lg opacity-0 pointer-events-none transition-opacity duration-200;
+            }
+            .tooltip.show {
+                @apply opacity-100;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="flex h-screen">
+        <!-- 左侧边栏 -->
+        <div class="w-64 bg-white shadow-sm flex flex-col border-r border-gray-200">
+            <!-- 顶部：主页选项和更新按钮 -->
+            <div class="p-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                            <i class="fa fa-graduation-cap text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-sm font-semibold text-gray-800 cursor-pointer hover:text-blue-600 transition-colors duration-200" id="home-title">论文学习平台</h1>
+                            <p class="text-xs text-gray-500">Paper Learning Platform</p>
+                        </div>
+                    </div>
+                    <button id="refresh-btn" class="bg-gray-50 text-gray-500 p-1.5 rounded hover:bg-gray-100 transition-colors duration-200" title="更新数据">
+                        <i class="fa fa-refresh text-xs"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 论文目录 -->
+            <div class="flex-1 overflow-y-auto p-3">
+                <h3 class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">论文目录</h3>
+                <div id="paper-tree"></div>
+            </div>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div class="flex-1 flex flex-col">
+            <!-- 上边栏：搜索框和按钮 -->
+            <div class="bg-white shadow-sm border-b border-gray-200 p-4">
+                <div class="flex items-center gap-4">
+                    <div class="flex-1">
+                        <input type="text" id="search-input" placeholder="搜索论文标题、作者、关键词..." 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                    </div>
+                    <button id="advanced-compare-btn" class="bg-secondary text-white px-4 py-2 rounded-md hover:bg-secondary/90 transition-colors duration-200">
+                        <i class="fa fa-balance-scale mr-2"></i>高级对比
+                    </button>
+                    <button id="advanced-search-btn" class="bg-accent text-white px-4 py-2 rounded-md hover:bg-accent/90 transition-colors duration-200">
+                        <i class="fa fa-search-plus mr-2"></i>高级检索
+                    </button>
+                </div>
+            </div>
+
+            <!-- 正文部分 -->
+            <div class="flex-1 overflow-y-auto p-6">
+                <!-- 主页内容：论文列表 -->
+                <div id="home-content">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">论文概览</h2>
+                    <div id="papers-list" class="grid gap-4">
+                        <!-- 论文卡片将在这里动态生成 -->
+                    </div>
+                </div>
+
+                <!-- 论文详情内容 -->
+                <div id="paper-detail" class="hidden">
+                    <div class="paper-detail-container">
+                        <!-- 论文头部信息 -->
+                        <div class="paper-header">
+                            <h1 id="paper-detail-title" class="paper-title-large"></h1>
+                            <div id="paper-detail-meta" class="paper-meta"></div>
+                        </div>
+                        
+                        <!-- 标签页导航 -->
+                        <div class="paper-tabs">
+                            <div class="paper-tab active" data-tab="basic">
+                                <i class="fa fa-file-text mr-2"></i>基本信息
+                            </div>
+                            <div class="paper-tab" data-tab="method">
+                                <i class="fa fa-cogs mr-2"></i>方法分析
+                            </div>
+                            <div class="paper-tab" data-tab="experiments">
+                                <i class="fa fa-flask mr-2"></i>实验数据
+                            </div>
+                            <div class="paper-tab" data-tab="mystudy">
+                                <i class="fa fa-graduation-cap mr-2"></i>个人学习
+                            </div>
+                        </div>
+                        
+                        <!-- 标签页内容 -->
+                        <div class="paper-content">
+                            <div id="paper-tab-content">
+                                <!-- 标签页内容将在这里显示 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let papersData = {};
+        let structureData = '';
+        let currentView = 'home';
+        let selectedPaperId = null;
+
+        // 初始化
+        async function init() {
+            try {
+                await loadData();
+                renderPaperTree();
+                renderPapersList();
+                bindEvents();
+            } catch (error) {
+                console.error('初始化失败:', error);
+                showError('数据加载失败，请检查文件路径');
+            }
+        }
+
+        // 加载数据 - 完全静态版本
+        async function loadData() {
+            try {
+                // 加载论文数据 - 直接读取本地JSON文件
+                const papersResponse = await fetch('../notes/total.json');
+                if (!papersResponse.ok) {
+                    throw new Error('无法加载论文数据，请确保 notes/total.json 文件存在');
+                }
+                const papersResult = await papersResponse.json();
+                papersData = papersResult.papers || {};
+
+                // 加载目录结构 - 直接读取本地文本文件
+                const structureResponse = await fetch('../notes/structure.txt');
+                if (!structureResponse.ok) {
+                    throw new Error('无法加载目录结构，请确保 notes/structure.txt 文件存在');
+                }
+                structureData = await structureResponse.text();
+            } catch (error) {
+                console.error('数据加载失败:', error);
+                throw error;
+            }
+        }
+
+        // 渲染论文目录树
+        function renderPaperTree() {
+            const treeContainer = document.getElementById('paper-tree');
+            treeContainer.innerHTML = '';
+
+            if (!structureData) {
+                treeContainer.innerHTML = '<p class="text-gray-500 text-sm">暂无目录数据</p>';
+                return;
+            }
+
+            const lines = structureData.split('\n').filter(line => line.trim());
+            const treeStructure = buildTreeStructure(lines);
+            renderTreeNodes(treeContainer, treeStructure);
+        }
+
+        // 构建树形结构
+        function buildTreeStructure(lines) {
+            const stack = [];
+            const root = { children: [] };
+
+            lines.forEach(line => {
+                const level = (line.match(/^ */)[0].length) / 2;
+                const content = line.trim();
+                
+                if (content) {
+                    const node = {
+                        content: content,
+                        level: level,
+                        children: [],
+                        isPaper: findPaperIdByTitle(content) !== null,
+                        paperId: findPaperIdByTitle(content)
+                    };
+
+                    // 找到正确的父节点
+                    while (stack.length > level) {
+                        stack.pop();
+                    }
+
+                    if (stack.length === 0) {
+                        root.children.push(node);
+                    } else {
+                        stack[stack.length - 1].children.push(node);
+                    }
+
+                    stack[level] = node;
+                }
+            });
+
+            return root;
+        }
+
+        // 渲染树节点
+        function renderTreeNodes(container, node, level = 0) {
+            if (node.children) {
+                node.children.forEach(child => {
+                    const item = document.createElement('div');
+                    item.className = 'directory-item';
+                    item.style.paddingLeft = `${level * 12}px`;
+
+                    if (child.isPaper) {
+                        // 论文项
+                        item.innerHTML = `<i class="fa fa-file-text mr-1.5 text-blue-500 text-xs"></i><span class="text-xs">${child.content}</span>`;
+                        item.dataset.paperId = child.paperId;
+                        item.addEventListener('click', () => showPaperDetail(child.paperId));
+                    } else {
+                        // 目录项
+                        item.innerHTML = `<i class="fa fa-folder mr-1.5 text-gray-400 text-xs"></i><span class="text-xs">${child.content}</span>`;
+                        item.addEventListener('click', () => toggleDirectory(item, child));
+                    }
+
+                    container.appendChild(item);
+
+                    // 如果有子节点，创建子容器
+                    if (child.children && child.children.length > 0) {
+                        const childrenContainer = document.createElement('div');
+                        childrenContainer.className = 'directory-children collapsed';
+                        childrenContainer.dataset.level = level + 1;
+                        container.appendChild(childrenContainer);
+                        renderTreeNodes(childrenContainer, child, level + 1);
+                    }
+                });
+            }
+        }
+
+        // 根据标题查找论文ID
+        function findPaperIdByTitle(title) {
+            for (const [paperId, paper] of Object.entries(papersData)) {
+                if (paper.basic && paper.basic.title === title) {
+                    return paperId;
+                }
+            }
+            return null;
+        }
+
+        // 切换目录展开/折叠
+        function toggleDirectory(item, node) {
+            const icon = item.querySelector('i');
+            const nextSibling = item.nextElementSibling;
+            
+            if (nextSibling && nextSibling.classList.contains('directory-children')) {
+                if (nextSibling.classList.contains('collapsed')) {
+                    // 展开
+                    nextSibling.classList.remove('collapsed');
+                    icon.classList.remove('fa-folder');
+                    icon.classList.add('fa-folder-open');
+                } else {
+                    // 折叠
+                    nextSibling.classList.add('collapsed');
+                    icon.classList.remove('fa-folder-open');
+                    icon.classList.add('fa-folder');
+                }
+            }
+        }
+
+        // 渲染论文列表
+        function renderPapersList() {
+            const papersList = document.getElementById('papers-list');
+            papersList.innerHTML = '';
+
+            const papers = Object.entries(papersData);
+            if (papers.length === 0) {
+                papersList.innerHTML = '<p class="text-gray-500 text-sm">暂无论文数据</p>';
+                return;
+            }
+
+            papers.forEach(([paperId, paper]) => {
+                const paperCard = document.createElement('div');
+                paperCard.className = 'paper-card flex items-center justify-between';
+                paperCard.dataset.paperId = paperId;
+                paperCard.addEventListener('click', () => showPaperDetail(paperId));
+
+                const title = paper.basic?.title || '无标题';
+                const authors = paper.basic?.authors ? 
+                    (Array.isArray(paper.basic.authors) ? paper.basic.authors.join(', ') : paper.basic.authors) : 
+                    '未知作者';
+                const year = paper.basic?.year || '未知年份';
+
+                paperCard.innerHTML = `
+                    <div class="flex-1 min-w-0">
+                        <h3 class="paper-title" title="${title}">${title}</h3>
+                        <p class="paper-authors" title="${authors}">${authors}</p>
+                    </div>
+                    <span class="paper-year ml-3 flex-shrink-0">${year}</span>
+                `;
+
+                papersList.appendChild(paperCard);
+            });
+        }
+
+        // 显示论文详情
+        function showPaperDetail(paperId) {
+            currentView = 'detail';
+            selectedPaperId = paperId;
+            
+            // 隐藏主页内容，显示详情内容
+            document.getElementById('home-content').classList.add('hidden');
+            document.getElementById('paper-detail').classList.remove('hidden');
+            
+            // 更新侧边栏选中状态
+            updateSidebarSelection(paperId);
+            
+            // 渲染论文详情
+            renderPaperDetail(paperId);
+        }
+
+        // 更新侧边栏选中状态
+        function updateSidebarSelection(paperId) {
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const selectedItem = document.querySelector(`[data-paper-id="${paperId}"]`);
+            if (selectedItem) {
+                selectedItem.classList.add('active');
+            }
+        }
+
+        // 渲染论文详情
+        function renderPaperDetail(paperId) {
+            const paper = papersData[paperId];
+            if (!paper) {
+                document.getElementById('paper-tab-content').innerHTML = '<p class="text-gray-500">论文数据不存在</p>';
+                return;
+            }
+
+            // 设置论文头部信息
+            const title = paper.basic?.title || '无标题';
+            const authors = paper.basic?.authors ? 
+                (Array.isArray(paper.basic.authors) ? paper.basic.authors.join(', ') : paper.basic.authors) : 
+                '未知作者';
+            const year = paper.basic?.year || '未知年份';
+            const journal = paper.basic?.journal_conference || '未知期刊/会议';
+
+            document.getElementById('paper-detail-title').textContent = title;
+            document.getElementById('paper-detail-meta').innerHTML = `
+                <div class="flex items-center gap-4">
+                    <span><strong>作者:</span> ${authors}</span>
+                    <span><strong>年份:</span> ${year}</span>
+                    <span><strong>期刊/会议:</span> ${journal}</span>
+                </div>
+            `;
+
+            // 渲染默认标签页（基本信息）
+            renderPaperTab('basic', paper);
+        }
+
+        // 渲染标签页内容
+        function renderPaperTab(tabName, paper) {
+            const content = document.getElementById('paper-tab-content');
+            content.innerHTML = '';
+
+            switch (tabName) {
+                case 'basic':
+                    renderBasicTab(content, paper);
+                    break;
+                case 'method':
+                    renderMethodTab(content, paper);
+                    break;
+                case 'experiments':
+                    renderExperimentsTab(content, paper);
+                    break;
+                case 'mystudy':
+                    renderMyStudyTab(content, paper);
+                    break;
+            }
+        }
+
+        // 渲染基本信息标签页
+        function renderBasicTab(container, paper) {
+            const basic = paper.basic || {};
+            const grid = document.createElement('div');
+            grid.className = 'paper-grid';
+
+            // 左侧列
+            const leftCol = document.createElement('div');
+            leftCol.innerHTML = `
+                <div class="paper-section">
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-info-circle text-blue-500"></i>论文信息
+                    </h3>
+                    <div class="paper-field">
+                        <div class="paper-field-label">标题</div>
+                        <div class="paper-field-content">${basic.title || '无'}</div>
+                    </div>
+                    <div class="paper-field">
+                        <div class="paper-field-label">作者</div>
+                        <div class="paper-field-content">${Array.isArray(basic.authors) ? basic.authors.join(', ') : basic.authors || '无'}</div>
+                    </div>
+                    <div class="paper-field">
+                        <div class="paper-field-label">期刊/会议</div>
+                        <div class="paper-field-content">${basic.journal_conference || '无'}</div>
+                    </div>
+                    <div class="paper-field">
+                        <div class="paper-field-label">年份</div>
+                        <div class="paper-field-content">${basic.year || '无'}</div>
+                    </div>
+                    <div class="paper-field">
+                        <div class="paper-field-label">引用数</div>
+                        <div class="paper-field-content">${basic.citation_count || '无'}</div>
+                    </div>
+                </div>
+            `;
+
+            // 右侧列
+            const rightCol = document.createElement('div');
+            rightCol.innerHTML = `
+                <div class="paper-section">
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-tags text-green-500"></i>标签与链接
+                    </h3>
+                    <div class="paper-field">
+                        <div class="paper-field-label">标签</div>
+                        <div class="paper-field-content">${Array.isArray(basic.tags) ? basic.tags.join(', ') : basic.tags || '无'}</div>
+                    </div>
+                    <div class="paper-field">
+                        <div class="paper-field-label">文件地址</div>
+                        <div class="paper-field-content">${basic.file_address || '无'}</div>
+                    </div>
+                    <div class="paper-field">
+                        <div class="paper-field-label">链接</div>
+                        <div class="paper-field-content">${basic.link ? `<a href="${basic.link}" target="_blank" class="text-blue-600 hover:underline">${basic.link}</a>` : '无'}</div>
+                    </div>
+                </div>
+                <div class="paper-section">
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-clock text-purple-500"></i>元数据
+                    </h3>
+                    <div class="paper-field">
+                        <div class="paper-field-label">创建日期</div>
+                        <div class="paper-field-content">${basic.created_date || '无'}</div>
+                    </div>
+                    <div class="paper-field">
+                        <div class="paper-field-label">更新日期</div>
+                        <div class="paper-field-content">${basic.last_updated || '无'}</div>
+                    </div>
+                </div>
+            `;
+
+            grid.appendChild(leftCol);
+            grid.appendChild(rightCol);
+            container.appendChild(grid);
+
+            // 摘要部分
+            if (basic.abstract) {
+                const abstractSection = document.createElement('div');
+                abstractSection.className = 'paper-section';
+                abstractSection.innerHTML = `
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-file-text-o text-orange-500"></i>摘要
+                    </h3>
+                    <div class="paper-field-content">${basic.abstract}</div>
+                `;
+                container.appendChild(abstractSection);
+            }
+        }
+
+        // 渲染方法分析标签页
+        function renderMethodTab(container, paper) {
+            const method = paper.method || {};
+            const grid = document.createElement('div');
+            grid.className = 'paper-grid';
+
+            // 左侧列
+            const leftCol = document.createElement('div');
+            leftCol.innerHTML = `
+                <div class="paper-section">
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-question-circle text-red-500"></i>问题与局限
+                    </h3>
+                    <div class="paper-field">
+                        <div class="paper-field-label">问题描述</div>
+                        <div class="paper-field-content">${method.problem || '无'}</div>
+                    </div>
+                    <div class="paper-field">
+                        <div class="paper-field-label">局限性</div>
+                        <div class="paper-field-content">${method.limitations || '无'}</div>
+                    </div>
+                </div>
+                <div class="paper-section">
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-lightbulb-o text-yellow-500"></i>核心思想
+                    </h3>
+                    <div class="paper-field">
+                        <div class="paper-field-content">${method.core_idea || '无'}</div>
+                    </div>
+                </div>
+            `;
+
+            // 右侧列
+            const rightCol = document.createElement('div');
+            rightCol.innerHTML = `
+                <div class="paper-section">
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-cogs text-blue-500"></i>技术细节
+                    </h3>
+                    <div class="paper-field">
+                        <div class="paper-field-label">算法细节</div>
+                        <div class="paper-field-content">${method.algorithm || '无'}</div>
+                    </div>
+                    <div class="paper-field">
+                        <div class="paper-field-label">创新点</div>
+                        <div class="paper-field-content">${method.novelties || '无'}</div>
+                    </div>
+                </div>
+            `;
+
+            grid.appendChild(leftCol);
+            grid.appendChild(rightCol);
+            container.appendChild(grid);
+
+            // 核心图片部分
+            if (method.core_pic) {
+                const imageSection = document.createElement('div');
+                imageSection.className = 'paper-section';
+                imageSection.innerHTML = `
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-image text-green-500"></i>核心图片
+                    </h3>
+                    <div class="paper-image-container">
+                        <img src="../notes/pics/${method.core_pic}" alt="核心图片" class="paper-image" onerror="this.style.display='none'">
+                    </div>
+                `;
+                container.appendChild(imageSection);
+            }
+        }
+
+        // 渲染实验数据标签页
+        function renderExperimentsTab(container, paper) {
+            const experiments = paper.experiments || {};
+            const grid = document.createElement('div');
+            grid.className = 'paper-grid';
+
+            // 左侧列
+            const leftCol = document.createElement('div');
+            leftCol.innerHTML = `
+                <div class="paper-section">
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-database text-blue-500"></i>数据集与指标
+                    </h3>
+                    <div class="paper-field">
+                        <div class="paper-field-label">数据集</div>
+                        <div class="paper-field-content">${Array.isArray(experiments.datasets) ? experiments.datasets.join(', ') : experiments.datasets || '无'}</div>
+                    </div>
+                    <div class="paper-field">
+                        <div class="paper-field-label">评估指标</div>
+                        <div class="paper-field-content">${Array.isArray(experiments.metrics) ? experiments.metrics.join(', ') : experiments.metrics || '无'}</div>
+                    </div>
+                </div>
+                <div class="paper-section">
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-chart-line text-green-500"></i>实验结果
+                    </h3>
+                    <div class="paper-field">
+                        <div class="paper-field-content">${experiments.results || '无'}</div>
+                    </div>
+                </div>
+            `;
+
+            // 右侧列
+            const rightCol = document.createElement('div');
+            rightCol.innerHTML = `
+                <div class="paper-section">
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-flask text-purple-500"></i>其他实验
+                    </h3>
+                    <div class="paper-field">
+                        <div class="paper-field-content">${Array.isArray(experiments.other_experiments) ? experiments.other_experiments.join(', ') : experiments.other_experiments || '无'}</div>
+                    </div>
+                </div>
+                <div class="paper-section">
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-balance-scale text-orange-500"></i>优势与局限
+                    </h3>
+                    <div class="paper-field">
+                        <div class="paper-field-label">优势</div>
+                        <div class="paper-field-content">${experiments.strengths || '无'}</div>
+                    </div>
+                    <div class="paper-field">
+                        <div class="paper-field-label">局限</div>
+                        <div class="paper-field-content">${experiments.weaknesses || '无'}</div>
+                    </div>
+                </div>
+            `;
+
+            grid.appendChild(leftCol);
+            grid.appendChild(rightCol);
+            container.appendChild(grid);
+
+            // 开源信息
+            if (experiments.open_source) {
+                const openSourceSection = document.createElement('div');
+                openSourceSection.className = 'paper-section';
+                openSourceSection.innerHTML = `
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-github text-gray-500"></i>开源信息
+                    </h3>
+                    <div class="paper-field">
+                        <div class="paper-field-label">代码可用性</div>
+                        <div class="paper-field-content">${experiments.open_source.code_available ? '是' : '否'}</div>
+                    </div>
+                    <div class="paper-field">
+                        <div class="paper-field-label">代码链接</div>
+                        <div class="paper-field-content">${experiments.open_source.link ? `<a href="${experiments.open_source.link}" target="_blank" class="text-blue-600 hover:underline">${experiments.open_source.link}</a>` : '无'}</div>
+                    </div>
+                `;
+                container.appendChild(openSourceSection);
+            }
+        }
+
+        // 渲染个人学习标签页
+        function renderMyStudyTab(container, paper) {
+            const myStudy = paper.my_study || {};
+            const grid = document.createElement('div');
+            grid.className = 'paper-grid';
+
+            // 左侧列
+            const leftCol = document.createElement('div');
+            leftCol.innerHTML = `
+                <div class="paper-section">
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-repeat text-blue-500"></i>复现情况
+                    </h3>
+                    <div class="paper-field">
+                        <div class="paper-field-content">${myStudy.reproduction || '无'}</div>
+                    </div>
+                </div>
+            `;
+
+            // 右侧列
+            const rightCol = document.createElement('div');
+            rightCol.innerHTML = `
+                <div class="paper-section">
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-lightbulb-o text-yellow-500"></i>学习灵感
+                    </h3>
+                    <div class="paper-field">
+                        <div class="paper-field-content">${Array.isArray(myStudy.inspiration) ? myStudy.inspiration.join(', ') : myStudy.inspiration || '无'}</div>
+                    </div>
+                </div>
+            `;
+
+            grid.appendChild(leftCol);
+            grid.appendChild(rightCol);
+            container.appendChild(grid);
+        }
+
+        // 创建章节
+        function createSection(title, data, fields) {
+            const section = document.createElement('div');
+            section.className = 'mb-8';
+            
+            const sectionTitle = document.createElement('h3');
+            sectionTitle.className = 'section-title';
+            sectionTitle.textContent = title;
+            section.appendChild(sectionTitle);
+
+            fields.forEach(field => {
+                const value = data[field.key];
+                if (value !== undefined && value !== null && value !== '') {
+                    const fieldGroup = document.createElement('div');
+                    fieldGroup.className = 'field-group';
+                    
+                    const label = document.createElement('div');
+                    label.className = 'field-label';
+                    label.textContent = field.label;
+                    fieldGroup.appendChild(label);
+                    
+                    const content = document.createElement('div');
+                    content.className = 'field-content';
+                    
+                    if (field.isArray && Array.isArray(value)) {
+                        const arrayContent = document.createElement('div');
+                        arrayContent.className = 'array-content';
+                        value.forEach(item => {
+                            if (item && item.trim()) {
+                                const arrayItem = document.createElement('div');
+                                arrayItem.className = 'array-item';
+                                arrayItem.textContent = item;
+                                arrayContent.appendChild(arrayItem);
+                            }
+                        });
+                        content.appendChild(arrayContent);
+                    } else if (field.isObject && typeof value === 'object') {
+                        Object.entries(value).forEach(([key, val]) => {
+                            if (val !== undefined && val !== null && val !== '') {
+                                const subField = document.createElement('div');
+                                subField.className = 'mb-2';
+                                subField.innerHTML = `<strong>${key}:</strong> ${val}`;
+                                content.appendChild(subField);
+                            }
+                        });
+                    } else {
+                        content.textContent = value;
+                    }
+                    
+                    fieldGroup.appendChild(content);
+                    section.appendChild(fieldGroup);
+                }
+            });
+            
+            return section;
+        }
+
+        // 显示主页
+        function showHome() {
+            currentView = 'home';
+            selectedPaperId = null;
+            
+            document.getElementById('home-content').classList.remove('hidden');
+            document.getElementById('paper-detail').classList.add('hidden');
+        }
+
+        // 搜索论文
+        function searchPapers(query) {
+            const results = [];
+            const searchTerms = query.toLowerCase().split(' ').filter(term => term.length > 0);
+            
+            for (const [id, paper] of Object.entries(papersData)) {
+                let score = 0;
+                let matchCount = 0;
+                
+                // 搜索标题
+                if (paper.basic?.title) {
+                    const title = paper.basic.title.toLowerCase();
+                    searchTerms.forEach(term => {
+                        if (title.includes(term)) {
+                            score += 10; // 标题匹配权重最高
+                            matchCount++;
+                        }
+                    });
+                }
+                
+                // 搜索作者
+                if (paper.basic?.authors) {
+                    const authors = Array.isArray(paper.basic.authors) ? paper.basic.authors : [paper.basic.authors];
+                    authors.forEach(author => {
+                        searchTerms.forEach(term => {
+                            if (author.toLowerCase().includes(term)) {
+                                score += 8;
+                                matchCount++;
+                            }
+                        });
+                    });
+                }
+                
+                // 搜索摘要
+                if (paper.basic?.abstract) {
+                    searchTerms.forEach(term => {
+                        if (paper.basic.abstract.toLowerCase().includes(term)) {
+                            score += 5;
+                            matchCount++;
+                        }
+                    });
+                }
+                
+                // 搜索标签
+                if (paper.basic?.tags) {
+                    const tags = Array.isArray(paper.basic.tags) ? paper.basic.tags : [paper.basic.tags];
+                    tags.forEach(tag => {
+                        searchTerms.forEach(term => {
+                            if (tag.toLowerCase().includes(term)) {
+                                score += 6;
+                                matchCount++;
+                            }
+                        });
+                    });
+                }
+                
+                // 搜索方法内容
+                if (paper.method) {
+                    ['problem', 'core_idea', 'algorithm', 'novelties'].forEach(field => {
+                        if (paper.method[field]) {
+                            searchTerms.forEach(term => {
+                                if (paper.method[field].toLowerCase().includes(term)) {
+                                    score += 3;
+                                    matchCount++;
+                                }
+                            });
+                        }
+                    });
+                }
+                
+                // 搜索实验结果
+                if (paper.experiments?.results) {
+                    searchTerms.forEach(term => {
+                        if (paper.experiments.results.toLowerCase().includes(term)) {
+                            score += 4;
+                            matchCount++;
+                        }
+                    });
+                }
+                
+                // 如果至少匹配一个搜索词，则加入结果
+                if (matchCount > 0) {
+                    results.push({ id, paper, score, matchCount });
+                }
+            }
+            
+            // 按分数排序
+            results.sort((a, b) => b.score - a.score);
+            
+            if (results.length > 0) {
+                renderSearchResults(results, query);
+            } else {
+                document.getElementById('papers-list').innerHTML = '<p class="text-gray-500 text-center py-8">未找到相关论文</p>';
+            }
+        }
+
+        // 渲染搜索结果
+        function renderSearchResults(results, query) {
+            const container = document.getElementById('papers-list');
+            container.innerHTML = '';
+
+            // 搜索结果标题
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200';
+            titleDiv.innerHTML = `
+                <h3 class="text-lg font-semibold text-blue-800 mb-2">
+                    <i class="fa fa-search mr-2"></i>搜索结果
+                </h3>
+                <p class="text-sm text-blue-600">找到 ${results.length} 篇相关论文</p>
+            `;
+            container.appendChild(titleDiv);
+
+            // 渲染论文卡片
+            results.forEach(({ id, paper, score }) => {
+                const card = document.createElement('div');
+                card.className = 'paper-card cursor-pointer hover:shadow-md transition-shadow duration-200';
+                card.onclick = () => selectPaper(id);
+                
+                const title = paper.basic?.title || '无标题';
+                const authors = paper.basic?.authors ? 
+                    (Array.isArray(paper.basic.authors) ? paper.basic.authors.join(', ') : paper.basic.authors) : 
+                    '未知作者';
+                const year = paper.basic?.year || '未知年份';
+                const journal = paper.basic?.journal_conference || '未知期刊/会议';
+                
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <h3 class="paper-title">${title}</h3>
+                            <p class="paper-authors">${authors}</p>
+                            <p class="paper-year">${year} · ${journal}</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs text-gray-500">相关度: ${score}</div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+
+            // 显示搜索结果
+            document.getElementById('home-content').classList.remove('hidden');
+            document.getElementById('paper-detail').classList.add('hidden');
+        }
+
+        // 高级搜索
+        function showAdvancedSearch() {
+            showError('高级搜索功能暂未实现');
+        }
+
+        // 高级对比
+        function showAdvancedCompare() {
+            showError('高级对比功能暂未实现');
+        }
+
+        // 绑定事件
+        function bindEvents() {
+            // 更新按钮
+            document.getElementById('refresh-btn').addEventListener('click', async () => {
+                try {
+                    await loadData();
+                    renderPaperTree();
+                    renderPapersList();
+                    showHome();
+                    showSuccess('数据已更新');
+                } catch (error) {
+                    showError('更新失败: ' + error.message);
+                }
+            });
+
+            // 标签页切换
+            document.querySelectorAll('.paper-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.dataset.tab;
+                    const paperId = selectedPaperId;
+                    
+                    if (paperId && papersData[paperId]) {
+                        // 更新标签页状态
+                        document.querySelectorAll('.paper-tab').forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        
+                        // 渲染对应标签页内容
+                        renderPaperTab(tabName, papersData[paperId]);
+                    }
+                });
+            });
+            
+            // 搜索功能
+            document.getElementById('search-input').addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                if (query.trim() === '') {
+                    showHome();
+                } else {
+                    searchPapers(query);
+                }
+            });
+
+            // 高级搜索按钮
+            document.getElementById('advanced-search-btn').addEventListener('click', () => {
+                showAdvancedSearch();
+            });
+
+            // 高级对比按钮
+            document.getElementById('advanced-compare-btn').addEventListener('click', () => {
+                showAdvancedCompare();
+            });
+
+            // 主页标题点击事件
+            document.getElementById('home-title').addEventListener('click', () => {
+                showHome();
+            });
+        }
+
+        // 过滤论文
+        function filterPapers(query) {
+            const papers = document.querySelectorAll('.paper-card');
+            papers.forEach(paper => {
+                const title = paper.querySelector('h3').textContent.toLowerCase();
+                const authors = paper.querySelector('p').textContent.toLowerCase();
+                const abstract = paper.querySelector('p:last-child').textContent.toLowerCase();
+                
+                if (title.includes(query) || authors.includes(query) || abstract.includes(query)) {
+                    paper.style.display = 'block';
+                } else {
+                    paper.style.display = 'none';
+                }
+            });
+        }
+
+        // 显示成功消息
+        function showSuccess(message) {
+            // 简单的成功提示，可以后续优化
+            alert(message);
+        }
+
+        // 显示错误消息
+        function showError(message) {
+            // 简单的错误提示，可以后续优化
+            alert(message);
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

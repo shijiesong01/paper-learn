@@ -1,0 +1,13 @@
+AI4Math
+  Lean
+    LeanDojo: Theorem Proving with Retrieval-Augmented Language Models
+    Lean Workbook: A large-scale Lean problem set formalized from natural language math problems
+    GOEDEL-PROVER-V2: SCALING FORMAL THEOREM PROVING WITH SCAFFOLDED DATA SYNTHESIS AND SELF-CORRECTION
+    LEAN-GitHub: Compiling GitHub LEAN repositories for a versatile LEAN prover
+    Towards Large Language Models as Copilots for Theorem Proving in Lean
+    Seed-Prover: Deep and Broad Reasoning for Automated Theorem Proving
+    LEANAGENT: LIFELONG LEARNING FOR FORMAL THEOREM PROVING
+    TheoremLlama: Transforming General-Purpose LLMs into Lean4 Experts
+  AlphaGeometry
+    Autoformalizing Euclidean Geometry
+    Solving olympiad geometry without human demonstrations

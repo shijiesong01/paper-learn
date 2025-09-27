@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论文核心图片上传测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .error {
+            color: #d32f2f;
+        }
+        .success {
+            color: #2e7d32;
+        }
+        .delete-btn {
+            background-color: #f44336;
+            margin-top: 10px;
+        }
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <h1>论文核心图片上传测试</h1>
+    
+    <div class="form-group">
+        <label for="paperId">论文ID：</label>
+        <input type="text" id="paperId" placeholder="请输入论文ID">
+    </div>
+    
+    <div class="form-group">
+        <label for="corePic">选择图片（JPG/PNG，最大10MB）：</label>
+        <input type="file" id="corePic" accept=".jpg,.jpeg,.png">
+    </div>
+    
+    <button id="uploadBtn">上传图片</button>
+    <button id="deleteBtn" class="delete-btn">删除图片</button>
+    
+    <div class="result" id="result">
+        <p>上传结果将显示在这里...</p>
+    </div>
+    
+    <script>
+        const paperIdInput = document.getElementById('paperId');
+        const corePicInput = document.getElementById('corePic');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const resultDiv = document.getElementById('result');
+        
+        // 上传图片
+        uploadBtn.addEventListener('click', async () => {
+            const paperId = paperIdInput.value.trim();
+            const file = corePicInput.files[0];
+            
+            if (!paperId) {
+                showResult('请输入论文ID', 'error');
+                return;
+            }
+            
+            if (!file) {
+                showResult('请选择要上传的图片', 'error');
+                return;
+            }
+            
+            // 检查文件类型
+            const validTypes = ['image/jpeg', 'image/png'];
+            if (!validTypes.includes(file.type)) {
+                showResult('只支持JPG和PNG格式的图片', 'error');
+                return;
+            }
+            
+            // 检查文件大小（10MB）
+            if (file.size > 10 * 1024 * 1024) {
+                showResult('图片大小不能超过10MB', 'error');
+                return;
+            }
+            
+            showResult('正在上传图片，请稍候...', '');
+            
+            try {
+                const formData = new FormData();
+                formData.append('paperId', paperId);
+                formData.append('core_pic', file);
+                
+                const response = await fetch('http://localhost:8000/api/upload-core-pic', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult(`上传成功！<br>文件名：${data.fileName}<br>文件路径：${data.filePath}`, 'success');
+                } else {
+                    showResult(`上传失败：${data.error || data.details || '未知错误'}`, 'error');
+                }
+            } catch (error) {
+                showResult(`请求失败：${error.message}`, 'error');
+            }
+        });
+        
+        // 删除图片
+        deleteBtn.addEventListener('click', async () => {
+            const paperId = paperIdInput.value.trim();
+            
+            if (!paperId) {
+                showResult('请输入论文ID', 'error');
+                return;
+            }
+            
+            showResult('正在删除图片，请稍候...', '');
+            
+            try {
+                const response = await fetch(`http://localhost:8000/api/delete-core-pic/${paperId}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult(`删除成功！<br>${data.message}`, 'success');
+                } else {
+                    showResult(`删除失败：${data.error || data.details || '未知错误'}`, 'error');
+                }
+            } catch (error) {
+                showResult(`请求失败：${error.message}`, 'error');
+            }
+        });
+        
+        // 显示结果
+        function showResult(message, type) {
+            resultDiv.innerHTML = `<p>${message}</p>`;
+            resultDiv.className = 'result';
+            
+            if (type) {
+                resultDiv.classList.add(type);
+            }
+        }
+    </script>
+</body>
+</html>

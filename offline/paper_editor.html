@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论文信息编辑器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#10B981', // 绿色
+                        secondary: '#3B82F6',
+                        accent: '#6366F1',
+                        neutral: '#1F2937',
+                        "base-100": '#FFFFFF',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .form-label {
+                @apply text-primary font-medium mb-1 block;
+            }
+            .form-input {
+                @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200;
+            }
+            .form-input::placeholder {
+                @apply text-gray-400;
+            }
+            .form-textarea {
+                @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 min-h-[100px] resize-y;
+            }
+            .form-textarea::placeholder {
+                @apply text-gray-400;
+            }
+            .section-title {
+                @apply text-xl font-bold mb-4 text-neutral;
+            }
+            .section-container {
+                @apply bg-white rounded-lg shadow-md p-6 mb-6 transition-all duration-300 hover:shadow-lg;
+            }
+            .add-button {
+                @apply bg-primary text-white px-3 py-1 rounded-md hover:bg-primary/90 transition-colors duration-200 flex items-center gap-1 mt-2;
+            }
+            .remove-button {
+                @apply bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600 transition-colors duration-200 text-sm;
+            }
+            .submit-button {
+                @apply bg-secondary text-white px-6 py-2 rounded-md hover:bg-secondary/90 transition-colors duration-200 shadow-md hover:shadow-lg font-medium;
+            }
+            .input-group {
+                @apply flex items-center gap-2 mb-2;
+            }
+            .array-item {
+                @apply flex items-center gap-2 mb-2;
+            }
+            .nav-button {
+                @apply bg-white text-gray-700 px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2 font-medium;
+            }
+            .nav-button.active {
+                @apply bg-primary text-white border-primary hover:bg-primary/90;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-neutral">论文信息编辑器</h1>
+            <div class="flex gap-3">
+                <button id="import-btn" class="bg-accent text-white px-4 py-2 rounded-md hover:bg-accent/90 transition-colors duration-200 shadow-md hover:shadow-lg font-medium">
+                    <i class="fa fa-download mr-2"></i>导入
+                </button>
+                <button id="update-btn" class="submit-button">
+                    <i class="fa fa-save mr-2"></i>更新
+                </button>
+                <button id="generate-structure-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors duration-200 shadow-md hover:shadow-lg font-medium">
+                    <i class="fa fa-sitemap mr-2"></i>生成目录
+                </button>
+            </div>
+        </div>
+
+        <!-- 论文ID输入区域 -->
+        <div class="section-container mb-6">
+            <div class="mb-6">
+                <label for="paper-id" class="form-label">论文ID</label>
+                <input type="text" id="paper-id" class="form-input" placeholder="请输入论文ID（如paper_id_0）">
+            </div>
+        </div>
+
+        <!-- 导航按钮 -->
+        <div class="flex gap-4 mb-6">
+            <button id="nav-basic" class="nav-button active" data-section="basic">
+                <i class="fa fa-file-text mr-2"></i>基本信息
+            </button>
+            <button id="nav-method" class="nav-button" data-section="method">
+                <i class="fa fa-cogs mr-2"></i>方法分析
+            </button>
+            <button id="nav-experiments" class="nav-button" data-section="experiments">
+                <i class="fa fa-flask mr-2"></i>实验数据
+            </button>
+            <button id="nav-mystudy" class="nav-button" data-section="mystudy">
+                <i class="fa fa-graduation-cap mr-2"></i>个人学习
+            </button>
+        </div>
+
+        <!-- 内容区域 -->
+        <div id="content-area">
+            <!-- 各板块内容区域 -->
+            <div id="basic-section" class="section-container" style="display: block;">
+                <h2 class="section-title">基本信息</h2>
+                <div id="basic-container"></div>
+            </div>
+            
+            <div id="method-section" class="section-container" style="display: none;">
+                <h2 class="section-title">方法分析</h2>
+                <div id="method-container"></div>
+            </div>
+            
+            <div id="experiments-section" class="section-container" style="display: none;">
+                <h2 class="section-title">实验数据</h2>
+                <div id="experiments-container"></div>
+            </div>
+            
+            <div id="mystudy-section" class="section-container" style="display: none;">
+                <h2 class="section-title">个人学习</h2>
+                <div id="mystudy-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始数据结构
+        const initialData = {
+            "basic": {
+                "title": "",
+                "authors": "",
+                "journal_conference": "",
+                "year": "",
+                "month": "",
+                "citation_count": "",
+                "tags": ["", ""],
+                "file_address": "",
+                "link": "",
+                "abstract": "",
+                "created_date": "",
+                "last_updated": ""
+            },
+            "method": {
+                "problem": "",
+                "limitations": "",
+                "core_idea": "",
+                "algorithm": "",
+                "novelties": "",
+                "core_pic": ""
+            },
+            "experiments": {
+                "datasets": ["", ""],
+                "metrics": ["", ""],
+                "results": "",
+                "other_experiments": ["", ""],
+                "strengths": "",
+                "weaknesses": "",
+                "open_source": {
+                    "code_available": true,
+                    "link": ""
+                }
+            },
+            "my_study": {
+                "reproduction": "",
+                "inspiration": ["", ""]
+            }
+        };
+        
+        // 提示文本映射表
+        const placeholderMap = {
+            "basic.title": "请输入论文标题",
+            "basic.authors": "请输入作者",
+            "basic.journal_conference": "请输入期刊/会议名称",
+            "basic.year": "请输入年份",
+            "basic.month": "请输入月份",
+            "basic.citation_count": "请输入引用数",
+            "basic.tags": "请输入标签",
+            "basic.file_address": "请输入./papers/之后的目录地址",
+            "basic.link": "请输入论文网络链接",
+            "basic.abstract": "请输入论文摘要",
+            "basic.created_date": "请输入创建日期",
+            "basic.last_updated": "请输入更新日期",
+            "method.problem": "文章要解决什么问题",
+            "method.limitations": "现有方法有何局限",
+            "method.core_idea": "文章核心思想",
+            "method.algorithm": "文章关键模型/算法细节",
+            "method.novelties": "文章创新点",
+            "method.core_pic": "请输入图片文件名（如：图片1.jpg）",
+            "experiments.datasets": "请输入数据集",
+            "experiments.metrics": "请输入数据集指标",
+            "experiments.results": "请输入实验结果描述",
+            "experiments.other_experiments": "请输入其他实验细节",
+            "experiments.strengths": "请输入本文优势",
+            "experiments.weaknesses": "请输入本文局限",
+            "experiments.open_source.link": "请输入开源代码链接",
+            "my_study.reproduction": "请输入复现情况",
+            "my_study.inspiration": "请输入灵感",
+            "metadata.created_date": "请输入创建日期",
+            "metadata.last_updated": "请输入更新日期"
+        };
+        
+        // 获取占位符文本
+        function getPlaceholder(key) {
+            return placeholderMap[key] || '';
+        }
+
+        // 渲染单个板块
+        function renderSection(sectionData, sectionKey, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            if (!sectionData || typeof sectionData !== 'object') {
+                return;
+            }
+
+            // 处理每个字段
+            for (const key in sectionData) {
+                const value = sectionData[key];
+                const fullKey = `${sectionKey}.${key}`;
+                
+                const fieldDiv = document.createElement('div');
+                fieldDiv.className = 'mb-4';
+                
+                const label = document.createElement('label');
+                label.className = 'form-label';
+                label.textContent = formatKey(key);
+                fieldDiv.appendChild(label);
+
+                // 根据值的类型生成不同的输入控件
+                // 特殊处理：authors字段即使是数组也渲染为单输入框
+                if (Array.isArray(value) && !(sectionKey === 'basic' && key === 'authors')) {
+                    renderArrayInput(fieldDiv, fullKey, value);
+                } else if (sectionKey === 'basic' && key === 'authors' && Array.isArray(value)) {
+                    // 对于authors字段，将数组转换为逗号分隔的字符串显示在单输入框中
+                    renderInput(fieldDiv, fullKey, value.join(', '));
+                } else if (typeof value === 'object' && value !== null) {
+                    // 处理嵌套对象
+                    const nestedDiv = document.createElement('div');
+                    nestedDiv.className = 'pl-4 border-l-2 border-gray-200';
+                    for (const nestedKey in value) {
+                        const nestedValue = value[nestedKey];
+                        const nestedFieldDiv = document.createElement('div');
+                        nestedFieldDiv.className = 'mb-4';
+
+                        const nestedLabel = document.createElement('label');
+                        nestedLabel.className = 'form-label';
+                        nestedLabel.textContent = formatKey(nestedKey);
+                        nestedFieldDiv.appendChild(nestedLabel);
+
+                        if (typeof nestedValue === 'boolean') {
+                            renderBooleanInput(nestedFieldDiv, `${fullKey}.${nestedKey}`, nestedValue);
+                        } else {
+                            renderInput(nestedFieldDiv, `${fullKey}.${nestedKey}`, nestedValue);
+                        }
+                        nestedDiv.appendChild(nestedFieldDiv);
+                    }
+                    fieldDiv.appendChild(nestedDiv);
+                } else if (typeof value === 'boolean') {
+                    renderBooleanInput(fieldDiv, fullKey, value);
+                } else {
+                    renderInput(fieldDiv, fullKey, value);
+                }
+                
+                container.appendChild(fieldDiv);
+            }
+        }
+
+        // 处理对象数据，生成对应的HTML表单（保留原函数用于兼容）
+        function renderObject(obj, containerId, parentKey = '') {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            // 遍历对象的每个部分
+            for (const sectionKey in obj) {
+                const section = obj[sectionKey];
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'section-container';
+                
+                const sectionTitle = document.createElement('h2');
+                sectionTitle.className = 'section-title';
+                sectionTitle.textContent = formatKey(sectionKey);
+                sectionDiv.appendChild(sectionTitle);
+
+                // 处理每个部分的内容
+                for (const key in section) {
+                    const value = section[key];
+                    const fullKey = parentKey ? `${parentKey}.${key}` : key;
+                    
+                    const fieldDiv = document.createElement('div');
+                    fieldDiv.className = 'mb-4';
+                    
+                    const label = document.createElement('label');
+                    label.className = 'form-label';
+                    label.textContent = formatKey(key);
+                    fieldDiv.appendChild(label);
+
+                    // 根据值的类型生成不同的输入控件
+                    // 特殊处理：authors字段即使是数组也渲染为单输入框
+                    if (Array.isArray(value) && !(sectionKey === 'basic' && key === 'authors')) {
+                        renderArrayInput(fieldDiv, `${sectionKey}.${key}`, value);
+                    } else if (sectionKey === 'basic' && key === 'authors' && Array.isArray(value)) {
+                        // 对于authors字段，将数组转换为逗号分隔的字符串显示在单输入框中
+                        renderInput(fieldDiv, `${sectionKey}.${key}`, value.join(', '));
+                    } else if (typeof value === 'object' && value !== null) {
+                        // 处理嵌套对象
+                        const nestedDiv = document.createElement('div');
+                        nestedDiv.className = 'pl-4 border-l-2 border-gray-200';
+                        for (const nestedKey in value) {
+                            const nestedValue = value[nestedKey];
+                            const nestedFieldDiv = document.createElement('div');
+                            nestedFieldDiv.className = 'mb-4';
+
+                            const nestedLabel = document.createElement('label');
+                            nestedLabel.className = 'form-label';
+                            nestedLabel.textContent = formatKey(nestedKey);
+                            nestedFieldDiv.appendChild(nestedLabel);
+
+                            if (typeof nestedValue === 'boolean') {
+                                renderBooleanInput(nestedFieldDiv, `${sectionKey}.${key}.${nestedKey}`, nestedValue);
+                            } else {
+                                renderInput(nestedFieldDiv, `${sectionKey}.${key}.${nestedKey}`, nestedValue);
+                            }
+                            nestedDiv.appendChild(nestedFieldDiv);
+                        }
+                        fieldDiv.appendChild(nestedDiv);
+                    } else if (typeof value === 'boolean') {
+                        renderBooleanInput(fieldDiv, `${sectionKey}.${key}`, value);
+                    } else {
+                        renderInput(fieldDiv, `${sectionKey}.${key}`, value);
+                    }
+                    
+                    sectionDiv.appendChild(fieldDiv);
+                }
+                
+                container.appendChild(sectionDiv);
+            }
+        }
+
+        // 生成普通输入框
+        function renderInput(container, key, value) {
+            // 对于较长的文本，使用textarea
+            if (key.includes('abstract') || key.includes('results') || key.includes('algorithm') || key.includes('novelties') ||
+                key.includes('problem') || key.includes('limitations') || key.includes('core_idea') ||
+                key.includes('other_experiments') || key.includes('strengths') || key.includes('weaknesses') ||
+                key.includes('reproduction') || key.includes('inspiration')) {
+                const textarea = document.createElement('textarea');
+                textarea.className = 'form-textarea';
+                textarea.value = value || '';
+                textarea.placeholder = value ? '' : getPlaceholder(key);
+                textarea.dataset.key = key;
+                container.appendChild(textarea);
+            } else {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'form-input';
+                input.value = value || '';
+                input.placeholder = value ? '' : getPlaceholder(key);
+                input.dataset.key = key;
+                container.appendChild(input);
+            }
+        }
+
+        // 生成布尔值输入框（复选框）
+        function renderBooleanInput(container, key, value) {
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary';
+            checkbox.checked = value;
+            checkbox.dataset.key = key;
+            
+            const label = document.createElement('label');
+            label.className = 'ml-2 text-sm text-gray-700';
+            label.textContent = value ? '是' : '否';
+            
+            const checkboxContainer = document.createElement('div');
+            checkboxContainer.className = 'flex items-center';
+            checkboxContainer.appendChild(checkbox);
+            checkboxContainer.appendChild(label);
+            
+            container.appendChild(checkboxContainer);
+        }
+
+        // 生成数组输入框
+        function renderArrayInput(container, key, values) {
+            const arrayContainer = document.createElement('div');
+            arrayContainer.className = 'array-container';
+            arrayContainer.dataset.key = key;
+            
+            values.forEach((value, index) => {
+                addArrayItem(arrayContainer, key, value, index);
+            });
+            
+            // 添加按钮
+            const addButton = document.createElement('button');
+            addButton.type = 'button';
+            addButton.className = 'add-button';
+            addButton.innerHTML = '<i class="fa fa-plus"></i> 添加项目';
+            addButton.addEventListener('click', () => {
+                const newIndex = arrayContainer.querySelectorAll('.array-item').length;
+                addArrayItem(arrayContainer, key, '', newIndex);
+            });
+            
+            container.appendChild(arrayContainer);
+            container.appendChild(addButton);
+        }
+
+        // 添加数组项
+        function addArrayItem(container, key, value, index) {
+            const arrayItem = document.createElement('div');
+            arrayItem.className = 'array-item';
+            
+            // 对于需要大输入框的数组字段，使用textarea
+            let inputElement;
+            if (key.includes('other_experiments') || key.includes('inspiration')) {
+                inputElement = document.createElement('textarea');
+                inputElement.className = 'form-textarea';
+            } else {
+                inputElement = document.createElement('input');
+                inputElement.type = 'text';
+                inputElement.className = 'form-input';
+            }
+            
+            inputElement.value = value || '';
+            inputElement.placeholder = value ? '' : getPlaceholder(key);
+            inputElement.dataset.key = `${key}[${index}]`;
+            
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'remove-button';
+            removeButton.innerHTML = '<i class="fa fa-minus"></i>';
+            removeButton.addEventListener('click', () => {
+                arrayItem.remove();
+                // 重新索引
+                reindexArrayItems(container, key);
+            });
+            
+            arrayItem.appendChild(inputElement);
+            arrayItem.appendChild(removeButton);
+            container.appendChild(arrayItem);
+        }
+
+        // 重新索引数组项
+        function reindexArrayItems(container, key) {
+            const items = container.querySelectorAll('.array-item');
+            items.forEach((item, index) => {
+                const input = item.querySelector('input, textarea');
+                input.dataset.key = `${key}[${index}]`;
+            });
+        }
+
+        // 格式化键名，使其更易读
+        function formatKey(key) {
+            // 将下划线和驼峰命名转换为空格分隔的中文友好名称
+            return key
+                .replace(/([A-Z])/g, ' $1')
+                .replace(/_/g, ' ')
+                .replace(/^./, str => str.toUpperCase())
+                .trim();
+        }
+
+        // 收集表单数据
+        function collectFormData() {
+            const data = {
+                "basic": {},
+                "method": {},
+                "experiments": {},
+                "my_study": {}
+            };
+            
+            // 处理普通输入和文本区域
+            document.querySelectorAll('input[data-key]:not([type="checkbox"]), textarea[data-key]').forEach(input => {
+                const key = input.dataset.key;
+                const value = input.value.trim();
+                
+                // 处理嵌套键路径
+                if (key.includes('.')) {
+                    const keys = key.split('.');
+                    let current = data;
+                    
+                    for (let i = 0; i < keys.length - 1; i++) {
+                        const k = keys[i];
+                        // 检查是否是数组索引
+                        if (k.includes('[')) {
+                            const arrayKey = k.split('[')[0];
+                            const index = parseInt(k.split('[')[1].split(']')[0]);
+                            
+                            if (!current[arrayKey]) {
+                                current[arrayKey] = [];
+                            }
+                            
+                            if (!Array.isArray(current[arrayKey])) {
+                                current[arrayKey] = [];
+                            }
+                            
+                            if (!current[arrayKey][index]) {
+                                current[arrayKey][index] = {};
+                            }
+                            
+                            current = current[arrayKey][index];
+                        } else {
+                            if (!current[k]) {
+                                current[k] = {};
+                            }
+                            current = current[k];
+                        }
+                    }
+                    
+                    // 设置最终值
+                    const lastKey = keys[keys.length - 1];
+                    if (lastKey.includes('[')) {
+                        const arrayKey = lastKey.split('[')[0];
+                        const index = parseInt(lastKey.split('[')[1].split(']')[0]);
+                        
+                        if (!current[arrayKey]) {
+                            current[arrayKey] = [];
+                        }
+                        
+                        current[arrayKey][index] = value;
+                    } else {
+                        current[lastKey] = value;
+                    }
+                } else {
+                    data[key] = value;
+                }
+            });
+            
+            // 处理复选框
+            document.querySelectorAll('input[type="checkbox"][data-key]').forEach(checkbox => {
+                const key = checkbox.dataset.key;
+                const checked = checkbox.checked;
+                
+                if (key.includes('.')) {
+                    const keys = key.split('.');
+                    let current = data;
+                    
+                    for (let i = 0; i < keys.length - 1; i++) {
+                        const k = keys[i];
+                        if (!current[k]) {
+                            current[k] = {};
+                        }
+                        current = current[k];
+                    }
+                    
+                    current[keys[keys.length - 1]] = checked;
+                } else {
+                    data[key] = checked;
+                }
+            });
+            
+            // 特殊处理：将authors单输入框的字符串转换为数组
+            if (data.basic && typeof data.basic.authors === 'string') {
+                data.basic.authors = data.basic.authors.split(',').map(author => author.trim()).filter(author => author);
+                // 如果数组为空，添加一个空字符串作为默认项
+                if (data.basic.authors.length === 0) {
+                    data.basic.authors = [''];
+                }
+            }
+
+            // 清理其他数组中的空值
+            for (const sectionKey in data) {
+                const section = data[sectionKey];
+                for (const key in section) {
+                    const value = section[key];
+                    if (Array.isArray(value) && !(sectionKey === 'basic' && key === 'authors')) {
+                        section[key] = value.filter(item => item && item.trim() !== '');
+                        // 如果数组为空，添加一个空字符串作为默认项
+                        if (section[key].length === 0) {
+                            section[key] = [''];
+                        }
+                    }
+                }
+            }
+            
+            return data;
+        }
+
+        // 下载JSON文件
+        function downloadJSON(data, filename) {
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // 导入功能：根据论文ID从服务器加载total.json中的数据
+        function importData() {
+            const paperId = document.getElementById('paper-id').value.trim();
+            if (!paperId) {
+                alert('请先输入论文ID！');
+                return;
+            }
+            
+            // 显示加载中状态
+            const importBtn = document.getElementById('import-btn');
+            const originalText = importBtn.innerHTML;
+            importBtn.disabled = true;
+            importBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>加载中...';
+            
+            // 调用服务器API获取数据
+            fetch('/api/total-json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('服务器响应错误：' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.papers && data.papers[paperId]) {
+                        // 从服务器获取的数据，将authors从数组转换为字符串（以逗号分隔）
+                        const paperData = data.papers[paperId];
+                        if (paperData.basic && Array.isArray(paperData.basic.authors)) {
+                            paperData.basic.authors = paperData.basic.authors.join(', ');
+                        }
+                        // 渲染到各个板块
+                        renderAllSections(paperData);
+                        alert('数据导入成功！已从total.json加载论文ID为 "' + paperId + '" 的内容。');
+                    } else {
+                        alert('未找到ID为 "' + paperId + '" 的论文数据！\n\n将使用初始模板。');
+                        // 使用初始数据
+                        renderAllSections(initialData);
+                    }
+                })
+                .catch(error => {
+                    alert('导入失败：' + error.message);
+                    console.error('导入数据失败：', error);
+                })
+                .finally(() => {
+                    // 恢复按钮状态
+                    importBtn.disabled = false;
+                    importBtn.innerHTML = originalText;
+                });
+        }
+
+        // 更新功能：将数据直接保存到服务器的total.json文件
+        function updateData() {
+            const paperId = document.getElementById('paper-id').value.trim() || 'paper_id_new';
+            const formData = collectFormData();
+            
+            // 将authors从数组转换为字符串（以逗号分隔）
+            if (formData.basic && Array.isArray(formData.basic.authors)) {
+                formData.basic.authors = formData.basic.authors.join(', ');
+            }
+            
+            // 显示保存中状态
+            const updateBtn = document.getElementById('update-btn');
+            const originalText = updateBtn.innerHTML;
+            updateBtn.disabled = true;
+            updateBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>保存中...';
+            
+            // 调用服务器API保存数据
+            fetch('/api/update-total-json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    paperId: paperId,
+                    paperData: formData
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('服务器响应错误：' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                    } else {
+                        throw new Error(data.error || '保存失败，未知错误');
+                    }
+                })
+                .catch(error => {
+                    alert('更新失败：' + error.message);
+                    console.error('更新数据失败：', error);
+                })
+                .finally(() => {
+                    // 恢复按钮状态
+                    updateBtn.disabled = false;
+                    updateBtn.innerHTML = originalText;
+                });
+        }
+
+        // 初始化加载数据功能：从服务器预加载数据
+        function loadInitialData() {
+            const paperId = document.getElementById('paper-id').value.trim();
+            if (!paperId) return;
+            
+            // 这里我们不再自动加载，而是让用户通过点击"导入"按钮来加载数据
+            // 这样可以避免不必要的API调用
+        }
+
+        // 生成目录结构功能
+        function generateStructure() {
+            // 显示加载中状态
+            const generateBtn = document.getElementById('generate-structure-btn');
+            const originalText = generateBtn.innerHTML;
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>生成中...';
+            
+            // 调用服务器API生成目录结构
+            fetch('/api/generate-structure', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    includePlaceholder: true
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('服务器响应错误：' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        // 可选：在控制台显示生成的目录结构，方便调试
+                        console.log('生成的目录结构：', data.structure);
+                    } else {
+                        throw new Error(data.error || '生成目录失败，未知错误');
+                    }
+                })
+                .catch(error => {
+                    alert('生成目录失败：' + error.message);
+                    console.error('生成目录结构失败：', error);
+                })
+                .finally(() => {
+                    // 恢复按钮状态
+                    generateBtn.disabled = false;
+                    generateBtn.innerHTML = originalText;
+                });
+        }
+        
+        // 导航功能
+        function switchSection(sectionName) {
+            // 隐藏所有板块
+            document.querySelectorAll('[id$="-section"]').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // 移除所有导航按钮的active状态
+            document.querySelectorAll('.nav-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 显示选中的板块
+            let sectionId;
+            if (sectionName === 'mystudy') {
+                sectionId = 'mystudy-section';
+            } else {
+                sectionId = `${sectionName}-section`;
+            }
+            document.getElementById(sectionId).style.display = 'block';
+            
+            // 激活对应的导航按钮
+            let navId;
+            if (sectionName === 'mystudy') {
+                navId = 'nav-mystudy';
+            } else {
+                navId = `nav-${sectionName}`;
+            }
+            document.getElementById(navId).classList.add('active');
+        }
+
+        // 渲染所有板块
+        function renderAllSections(data) {
+            // 渲染各个板块
+            renderSection(data.basic || initialData.basic, 'basic', 'basic-container');
+            renderSection(data.method || initialData.method, 'method', 'method-container');
+            renderSection(data.experiments || initialData.experiments, 'experiments', 'experiments-container');
+            renderSection(data.my_study || initialData.my_study, 'my_study', 'mystudy-container');
+        }
+
+        // 初始化函数
+        function init() {
+            // 渲染初始数据到各个板块
+            renderAllSections(initialData);
+            
+            // 默认显示基本信息
+            switchSection('basic');
+            
+            // 绑定导航按钮事件
+            document.querySelectorAll('.nav-button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const section = btn.dataset.section;
+                    switchSection(section);
+                });
+            });
+            
+            // 绑定导入按钮事件
+            document.getElementById('import-btn').addEventListener('click', importData);
+            
+            // 绑定更新按钮事件
+            document.getElementById('update-btn').addEventListener('click', updateData);
+            
+            // 绑定生成目录按钮事件
+            document.getElementById('generate-structure-btn').addEventListener('click', generateStructure);
+            
+            // 绑定论文ID变更事件
+            document.getElementById('paper-id').addEventListener('input', loadInitialData);
+            
+            // 初始化加载数据
+            loadInitialData();
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
