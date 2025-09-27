@@ -454,11 +454,22 @@
                     (Array.isArray(paper.basic.authors) ? paper.basic.authors.join(', ') : paper.basic.authors) : 
                     '未知作者';
                 const year = paper.basic?.year || '未知年份';
+                const tags = paper.basic?.tags ? 
+                    (Array.isArray(paper.basic.tags) ? paper.basic.tags : [paper.basic.tags]) : 
+                    [];
+
+                // 标签统一使用灰色
+                const getTagColor = (tag) => {
+                    return 'bg-gray-100 text-gray-800';
+                };
 
                 paperCard.innerHTML = `
                     <div class="flex-1 min-w-0">
                         <h3 class="paper-title" title="${title}">${title}</h3>
                         <p class="paper-authors" title="${authors}">${authors}</p>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            ${tags.map(tag => `<span class="px-2 py-0.5 ${getTagColor(tag)} text-xs rounded-full">${tag}</span>`).join('')}
+                        </div>
                     </div>
                     <span class="paper-year ml-3 flex-shrink-0">${year}</span>
                 `;
@@ -508,15 +519,24 @@
             const authors = paper.basic?.authors ? 
                 (Array.isArray(paper.basic.authors) ? paper.basic.authors.join(', ') : paper.basic.authors) : 
                 '未知作者';
-            const year = paper.basic?.year || '未知年份';
+            const tags = paper.basic?.tags ? 
+                (Array.isArray(paper.basic.tags) ? paper.basic.tags : [paper.basic.tags]) : 
+                [];
             const journal = paper.basic?.journal_conference || '未知期刊/会议';
 
             document.getElementById('paper-detail-title').textContent = title;
             document.getElementById('paper-detail-meta').innerHTML = `
-                <div class="flex items-center gap-4">
-                    <span><strong>作者:</span> ${authors}</span>
-                    <span><strong>年份:</span> ${year}</span>
-                    <span><strong>期刊/会议:</span> ${journal}</span>
+                <div class="space-y-2">
+                    <div class="text-sm text-gray-700">
+                        <strong>作者:</strong> ${authors}
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-600"><strong>标签:</strong></span>
+                        <div class="flex flex-wrap gap-1">
+                            ${tags.map(tag => `<span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">${tag}</span>`).join('')}
+                        </div>
+                        <span class="text-sm text-gray-600 ml-4"><strong>期刊/会议:</strong> ${journal}</span>
+                    </div>
                 </div>
             `;
 
@@ -571,12 +591,16 @@
                         <div class="paper-field-content">${formatTextWithLineBreaks(basic.journal_conference || '无')}</div>
                     </div>
                     <div class="paper-field">
-                        <div class="paper-field-label">年份</div>
-                        <div class="paper-field-content">${formatTextWithLineBreaks(basic.year || '无')}</div>
-                    </div>
-                    <div class="paper-field">
                         <div class="paper-field-label">引用数</div>
                         <div class="paper-field-content">${formatTextWithLineBreaks(basic.citation_count || '无')}</div>
+                    </div>
+                    <div class="paper-field">
+                        <div class="paper-field-label">时间</div>
+                        <div class="paper-field-content">${formatTextWithLineBreaks(
+                            basic.year && basic.month ? 
+                                `${basic.year}.${basic.month.padStart(2, '0')}` : 
+                                basic.year || '无'
+                        )}</div>
                     </div>
                 </div>
             `;
@@ -664,6 +688,14 @@
                         <div class="paper-field-content">${formatTextWithLineBreaks(method.core_idea || '无')}</div>
                     </div>
                 </div>
+                <div class="paper-section">
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-star text-green-500"></i>创新点
+                    </h3>
+                    <div class="paper-field">
+                        <div class="paper-field-content">${formatTextWithLineBreaks(method.novelties || '无')}</div>
+                    </div>
+                </div>
             `;
 
             // 右侧列
@@ -671,15 +703,10 @@
             rightCol.innerHTML = `
                 <div class="paper-section">
                     <h3 class="paper-section-title">
-                        <i class="fa fa-cogs text-blue-500"></i>技术细节
+                        <i class="fa fa-cogs text-blue-500"></i>算法细节
                     </h3>
                     <div class="paper-field">
-                        <div class="paper-field-label">算法细节</div>
                         <div class="paper-field-content">${formatTextWithLineBreaks(method.algorithm || '无')}</div>
-                    </div>
-                    <div class="paper-field">
-                        <div class="paper-field-label">创新点</div>
-                        <div class="paper-field-content">${formatTextWithLineBreaks(method.novelties || '无')}</div>
                     </div>
                 </div>
             `;
