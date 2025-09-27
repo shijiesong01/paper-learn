@@ -197,7 +197,19 @@
             <div class="flex-1 overflow-y-auto p-6">
                 <!-- 主页内容：论文列表 -->
                 <div id="home-content">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6">论文概览</h2>
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">论文概览</h2>
+                        <div class="flex items-center gap-2">
+                            <label for="sort-select" class="text-sm text-gray-600">排序方式：</label>
+                            <select id="sort-select" class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="default">默认排序</option>
+                                <option value="time">按时间排序</option>
+                                <option value="citations">按引用量排序</option>
+                                <option value="created">按创建日期排序</option>
+                                <option value="updated">按更新日期排序</option>
+                            </select>
+                        </div>
+                    </div>
                     <div id="papers-list" class="grid gap-4">
                         <!-- 论文卡片将在这里动态生成 -->
                     </div>
@@ -245,6 +257,7 @@
         let structureData = '';
         let currentView = 'home';
         let selectedPaperId = null;
+        let currentSearchResults = []; // 保存当前搜索结果
 
         // 初始化
         async function init() {
@@ -413,7 +426,7 @@
         }
 
         // 渲染论文列表
-        function renderPapersList() {
+        function renderPapersList(sortBy = 'default') {
             const papersList = document.getElementById('papers-list');
             papersList.innerHTML = '';
 
@@ -443,7 +456,10 @@
                 return;
             }
 
-            validPapers.forEach(([paperId, paper]) => {
+            // 根据排序方式排序
+            const sortedPapers = sortPapers(validPapers, sortBy);
+
+            sortedPapers.forEach(([paperId, paper]) => {
                 const paperCard = document.createElement('div');
                 paperCard.className = 'paper-card flex items-center justify-between';
                 paperCard.dataset.paperId = paperId;
@@ -453,7 +469,11 @@
                 const authors = paper.basic?.authors ? 
                     (Array.isArray(paper.basic.authors) ? paper.basic.authors.join(', ') : paper.basic.authors) : 
                     '未知作者';
-                const year = paper.basic?.year || '未知年份';
+                const year = paper.basic?.year || '';
+                const month = paper.basic?.month || '';
+                const timeDisplay = year && month ? 
+                    `${year}.${month.padStart(2, '0')}` : 
+                    year || '未知时间';
                 const tags = paper.basic?.tags ? 
                     (Array.isArray(paper.basic.tags) ? paper.basic.tags : [paper.basic.tags]) : 
                     [];
@@ -474,7 +494,7 @@
                             ${tags.map(tag => `<span class="px-2 py-0.5 ${getTagColor(tag)} text-xs rounded-full">${tag}</span>`).join('')}
                         </div>
                     </div>
-                    <span class="paper-year ml-3 flex-shrink-0">${year}</span>
+                    <span class="paper-year ml-3 flex-shrink-0">${timeDisplay}</span>
                 `;
 
                 papersList.appendChild(paperCard);
@@ -935,13 +955,15 @@
         function showHome() {
             currentView = 'home';
             selectedPaperId = null;
+            currentSearchResults = []; // 清空搜索结果
             
             document.getElementById('home-content').classList.remove('hidden');
             document.getElementById('paper-detail').classList.add('hidden');
         }
 
         // 搜索论文
-        function searchPapers(query) {
+        function searchPapers(query, sortBy = 'default') {
+            currentView = 'search'; // 设置当前视图为搜索状态
             const results = [];
             const searchTerms = query.toLowerCase().split(' ').filter(term => term.length > 0);
             
@@ -1030,14 +1052,16 @@
             results.sort((a, b) => b.score - a.score);
             
             if (results.length > 0) {
-                renderSearchResults(results, query);
+                currentSearchResults = results; // 保存搜索结果
+                renderSearchResults(results, query, sortBy);
             } else {
+                currentSearchResults = []; // 清空搜索结果
                 document.getElementById('papers-list').innerHTML = '<p class="text-gray-500 text-center py-8">未找到相关论文</p>';
             }
         }
 
         // 渲染搜索结果
-        function renderSearchResults(results, query) {
+        function renderSearchResults(results, query, sortBy = 'default') {
             const container = document.getElementById('papers-list');
             container.innerHTML = '';
 
@@ -1045,15 +1069,32 @@
             const titleDiv = document.createElement('div');
             titleDiv.className = 'mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200';
             titleDiv.innerHTML = `
-                <h3 class="text-lg font-semibold text-blue-800 mb-2">
-                    <i class="fa fa-search mr-2"></i>搜索结果
-                </h3>
-                <p class="text-sm text-blue-600">找到 ${results.length} 篇相关论文</p>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-semibold text-blue-800 mb-2">
+                            <i class="fa fa-search mr-2"></i>搜索结果
+                        </h3>
+                        <p class="text-sm text-blue-600">找到 ${results.length} 篇相关论文</p>
+                    </div>
+                    <button id="back-to-home-btn" class="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 border border-blue-300 rounded-md hover:bg-blue-50 hover:border-blue-400 transition-colors duration-200">
+                        <i class="fa fa-arrow-left"></i>
+                        <span>返回主页</span>
+                    </button>
+                </div>
             `;
             container.appendChild(titleDiv);
 
+            // 绑定返回按钮事件
+            document.getElementById('back-to-home-btn').addEventListener('click', () => {
+                showHome();
+                renderPapersList(); // 重新渲染主页论文列表
+            });
+
+            // 根据排序方式排序搜索结果
+            const sortedResults = sortSearchResults(results, sortBy);
+
             // 渲染论文卡片 - 使用与主页相同的格式
-            results.forEach(({ id, paper, score }) => {
+            sortedResults.forEach(({ id, paper, score }) => {
                 const paperCard = document.createElement('div');
                 paperCard.className = 'paper-card flex items-center justify-between';
                 paperCard.dataset.paperId = id;
@@ -1063,7 +1104,11 @@
                 const authors = paper.basic?.authors ? 
                     (Array.isArray(paper.basic.authors) ? paper.basic.authors.join(', ') : paper.basic.authors) : 
                     '未知作者';
-                const year = paper.basic?.year || '未知年份';
+                const year = paper.basic?.year || '';
+                const month = paper.basic?.month || '';
+                const timeDisplay = year && month ? 
+                    `${year}.${month.padStart(2, '0')}` : 
+                    year || '未知时间';
                 const tags = paper.basic?.tags ? 
                     (Array.isArray(paper.basic.tags) ? paper.basic.tags : [paper.basic.tags]) : 
                     [];
@@ -1084,7 +1129,7 @@
                         </div>
                     </div>
                     <div class="ml-3 flex-shrink-0 text-right">
-                        <span class="paper-year">${year}</span>
+                        <span class="paper-year">${timeDisplay}</span>
                         <div class="text-xs text-blue-600 mt-1">匹配度: ${score.toFixed(1)}</div>
                     </div>
                 `;
@@ -1170,6 +1215,22 @@
             document.getElementById('home-title').addEventListener('click', () => {
                 showHome();
             });
+
+            // 排序选择器事件
+            document.getElementById('sort-select').addEventListener('change', (e) => {
+                const sortBy = e.target.value;
+                console.log('排序选择器变化:', sortBy, '当前视图:', currentView);
+                if (currentView === 'home') {
+                    renderPapersList(sortBy);
+                } else if (currentView === 'search') {
+                    // 对当前搜索结果进行排序，不重新搜索
+                    console.log('搜索状态排序，结果数量:', currentSearchResults.length);
+                    if (currentSearchResults.length > 0) {
+                        const query = document.getElementById('search-input').value;
+                        renderSearchResults(currentSearchResults, query, sortBy);
+                    }
+                }
+            });
         }
 
         // 过滤论文
@@ -1218,6 +1279,107 @@
         function formatTextWithLineBreaks(text) {
             if (!text || typeof text !== 'string') return '';
             return text.replace(/\n/g, '<br>');
+        }
+
+        // 排序论文
+        function sortPapers(papers, sortBy) {
+            const sorted = [...papers];
+            
+            switch (sortBy) {
+                case 'time':
+                    // 按时间排序（年月）
+                    sorted.sort(([, a], [, b]) => {
+                        const timeA = getTimeValue(a);
+                        const timeB = getTimeValue(b);
+                        return timeB - timeA; // 降序，最新的在前
+                    });
+                    break;
+                case 'citations':
+                    // 按引用量排序
+                    sorted.sort(([, a], [, b]) => {
+                        const citationsA = parseInt(a.basic?.citation_count) || 0;
+                        const citationsB = parseInt(b.basic?.citation_count) || 0;
+                        return citationsB - citationsA; // 降序，引用量高的在前
+                    });
+                    break;
+                case 'created':
+                    // 按创建日期排序
+                    sorted.sort(([, a], [, b]) => {
+                        const dateA = new Date(a.basic?.created_date || a.metadata?.created_date || '1900-01-01');
+                        const dateB = new Date(b.basic?.created_date || b.metadata?.created_date || '1900-01-01');
+                        return dateB - dateA; // 降序，最新的在前
+                    });
+                    break;
+                case 'updated':
+                    // 按更新日期排序
+                    sorted.sort(([, a], [, b]) => {
+                        const dateA = new Date(a.basic?.last_updated || a.metadata?.last_updated || '1900-01-01');
+                        const dateB = new Date(b.basic?.last_updated || b.metadata?.last_updated || '1900-01-01');
+                        return dateB - dateA; // 降序，最新的在前
+                    });
+                    break;
+                case 'default':
+                default:
+                    // 默认排序（保持原有顺序）
+                    break;
+            }
+            
+            return sorted;
+        }
+
+        // 获取时间值用于排序
+        function getTimeValue(paper) {
+            const year = parseInt(paper.basic?.year) || 0;
+            const month = parseInt(paper.basic?.month) || 0;
+            return year * 100 + month; // 例如：2024.11 -> 202411
+        }
+
+        // 排序搜索结果
+        function sortSearchResults(results, sortBy) {
+            console.log('排序搜索结果:', sortBy, '结果数量:', results.length);
+            const sorted = [...results];
+            
+            switch (sortBy) {
+                case 'time':
+                    // 按时间排序（年月）
+                    sorted.sort((a, b) => {
+                        const timeA = getTimeValue(a.paper);
+                        const timeB = getTimeValue(b.paper);
+                        return timeB - timeA; // 降序，最新的在前
+                    });
+                    break;
+                case 'citations':
+                    // 按引用量排序
+                    sorted.sort((a, b) => {
+                        const citationsA = parseInt(a.paper.basic?.citation_count) || 0;
+                        const citationsB = parseInt(b.paper.basic?.citation_count) || 0;
+                        return citationsB - citationsA; // 降序，引用量高的在前
+                    });
+                    break;
+                case 'created':
+                    // 按创建日期排序
+                    sorted.sort((a, b) => {
+                        const dateA = new Date(a.paper.basic?.created_date || a.paper.metadata?.created_date || '1900-01-01');
+                        const dateB = new Date(b.paper.basic?.created_date || b.paper.metadata?.created_date || '1900-01-01');
+                        return dateB - dateA; // 降序，最新的在前
+                    });
+                    break;
+                case 'updated':
+                    // 按更新日期排序
+                    sorted.sort((a, b) => {
+                        const dateA = new Date(a.paper.basic?.last_updated || a.paper.metadata?.last_updated || '1900-01-01');
+                        const dateB = new Date(b.paper.basic?.last_updated || b.paper.metadata?.last_updated || '1900-01-01');
+                        return dateB - dateA; // 降序，最新的在前
+                    });
+                    break;
+                case 'default':
+                default:
+                    // 默认按搜索匹配度排序
+                    sorted.sort((a, b) => b.score - a.score);
+                    break;
+            }
+            
+            return sorted;
         }
 
         // 页面加载完成后初始化

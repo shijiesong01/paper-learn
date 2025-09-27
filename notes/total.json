@@ -395,11 +395,14 @@
         "title": "Solving olympiad geometry without human demonstrations",
         "authors": "Trieu H. Trinh, Yuhuai Wu, Quoc V. Le, He He, Thang Luong",
         "journal_conference": "Nature",
-        "year": "24",
+        "year": "2024",
         "month": "1",
         "citation_count": "663",
         "tags": [
-          ""
+          "theorem proving",
+          "Euclidean geometry",
+          "neural language model",
+          "neuro-symbolic framework"
         ],
         "file_address": "AI4Math\\AlphaGeometry\\Trinh 等 - 2024 - Solving olympiad geometry without human demonstrat.pdf",
         "link": "https://www.nature.com/articles/s41586-023-06747-5",
