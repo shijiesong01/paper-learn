@@ -55,38 +55,45 @@
     "LeanDojo: Theorem Proving with Retrieval-Augmented Language Models": {
       "basic": {
         "title": "LeanDojo: Theorem Proving with Retrieval-Augmented Language Models",
-        "authors": "",
-        "journal_conference": "",
-        "year": "",
-        "month": "",
-        "citation_count": "",
+        "authors": "Kaiyu Yang, Aidan M. Swope, Alex Gu, Rahul Chalamala, Peiyang Song, Shixing Yu, Saad Godil, Ryan Prenger, Anima Anandkumar",
+        "journal_conference": "NeurIPS 2023",
+        "year": "2023",
+        "month": "6",
+        "citation_count": "350",
         "tags": [
-          ""
+          "theorem proving",
+          "Lean",
+          "LLM",
+          "new benchmark",
+          "retriever",
+          "theorem prover"
         ],
         "file_address": "AI4Math\\Lean\\Yang 等 - LeanDojo Theorem Proving with Retrieval-Augmented.pdf",
-        "link": "",
-        "abstract": ""
+        "link": "https://arxiv.org/abs/2306.15626",
+        "abstract": "Large language models (LLMs) have shown promise in proving formal theorems using proof assistants such as Lean. However, existing methods are difficult to reproduce or build on, due to private code, data, and large compute requirements. This has created substantial barriers to research on machine learning methods for theorem proving. This paper removes these barriers by introducing LeanDojo: an open-source Lean playground consisting of toolkits, data, models, and benchmarks. LeanDojo extracts data from Lean and enables interaction with the proof environment programmatically. It contains fine-grained annotations of premises in proofs, providing valuable data for premise selection: a key bottleneck in theorem proving. Using this data, we develop ReProver (Retrieval-Augmented Prover): an LLM-based prover augmented with retrieval for selecting premises from a vast math library. It is inexpensive and needs only one GPU week of training. Our retriever leverages LeanDojo's program analysis capability to identify accessible premises and hard negative examples, which makes retrieval much more effective. Furthermore, we construct a new benchmark consisting of 98,734 theorems and proofs extracted from Lean's math library. It features challenging data split requiring the prover to generalize to theorems relying on novel premises that are never used in training. We use this benchmark for training and evaluation, and experimental results demonstrate the effectiveness of ReProver over non-retrieval baselines and GPT-4. We thus provide the first set of open-source LLM-based theorem provers without any proprietary datasets and release it under a permissive MIT license to facilitate further research."
       },
       "method": {
-        "problem": "",
-        "limitations": "",
-        "core_idea": "",
-        "algorithm": "",
+        "problem": "1.automated theorem proving (ATP): search space is prohibitively large   \n-> interactive theorem proving (ITP): augmenting LLMs with proof assistants like ITP; so they need source.\n2.Existing LLM-based provers: generate the next proof step (tactic), taking only the current state as input",
+        "limitations": "research on LLMs for theorem proving is facing many barriers:\n1.none provers are open source\n2.some rely on tailored infrastructure, not possible to fully reproduce",
+        "core_idea": "1.(->problem 1)Introduce LeanDojo: open-source toolkits, models, and benchmarks with modest computational costs.\n(1)For data extraction: LeanDojo extracts training data not directly visible in the raw Lean code; locate premises in Lean proofs\n(2)For interaction: Use it can observe proof states and receive feedback from Lean.\n(3)We construct a benchmark; and because LLMs can prove difficulities by memorize what they train, they design challenging data split.\n2.(->problem 2) Introduce ReProver: Given the current state,  retrieve premises from mathlib, then generates a tactic;\ntwo algorithmic innovations: (1)not all premises are accessible (2)DPR needs negative examples in training",
+        "algorithm": "1.LeanDojo\n1.1 Data Extraction\n(1)\n(2)\n1.2 LeanDojo Benchmark\n\n1.3 Interacting with Lean",
         "novelties": "",
-        "core_pic": ""
+        "core_pic": "LeanDojo Theorem Proving with Retrieval-Augmented Language Models.png"
       },
       "experiments": {
         "datasets": [
-          ""
+          "LeanDojo Benchmark",
+          "MiniF2F",
+          "ProofNet"
         ],
         "metrics": [
           ""
         ],
-        "results": "",
+        "results": "Evaluation:\nLeanDojo Benchmark: 51.2%; MiniF2F: 26.5%; ProofNet:13.8%; prove 65 theorems that dont have proofs in Lean",
         "other_experiments": [
           ""
         ],
-        "strengths": "",
+        "strengths": "1.introduce tools for extracting data from and interacting (with Lean)\n2.develop ReProver, the first retrievalaugmented language model for theorem proving.\n3.construct a challenging benchmark for learning-based theorem proving and use it to validate the effectiveness of ReProver.\n4.facilitate open research on LLMs for theorem proving by releasing our data, model, and code.",
         "weaknesses": "",
         "open_source": {
           "link": "",
@@ -98,10 +105,6 @@
         "inspiration": [
           ""
         ]
-      },
-      "metadata": {
-        "created_date": "",
-        "last_updated": ""
       }
     },
     "Lean Workbook: A large-scale Lean problem set formalized from natural language math problems": {
