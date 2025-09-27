@@ -1052,33 +1052,44 @@
             `;
             container.appendChild(titleDiv);
 
-            // 渲染论文卡片
+            // 渲染论文卡片 - 使用与主页相同的格式
             results.forEach(({ id, paper, score }) => {
-                const card = document.createElement('div');
-                card.className = 'paper-card cursor-pointer hover:shadow-md transition-shadow duration-200';
-                card.onclick = () => selectPaper(id);
-                
+                const paperCard = document.createElement('div');
+                paperCard.className = 'paper-card flex items-center justify-between';
+                paperCard.dataset.paperId = id;
+                paperCard.addEventListener('click', () => showPaperDetail(id));
+
                 const title = paper.basic?.title || '无标题';
                 const authors = paper.basic?.authors ? 
                     (Array.isArray(paper.basic.authors) ? paper.basic.authors.join(', ') : paper.basic.authors) : 
                     '未知作者';
                 const year = paper.basic?.year || '未知年份';
-                const journal = paper.basic?.journal_conference || '未知期刊/会议';
-                
-                card.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                            <h3 class="paper-title">${title}</h3>
-                            <p class="paper-authors">${authors}</p>
-                            <p class="paper-year">${year} · ${journal}</p>
+                const tags = paper.basic?.tags ? 
+                    (Array.isArray(paper.basic.tags) ? paper.basic.tags : [paper.basic.tags]) : 
+                    [];
+                const summary = paper.basic?.summary || '';
+
+                // 标签统一使用灰色
+                const getTagColor = (tag) => {
+                    return 'bg-gray-100 text-gray-800';
+                };
+
+                paperCard.innerHTML = `
+                    <div class="flex-1 min-w-0">
+                        <h3 class="paper-title" title="${title}">${title}</h3>
+                        <p class="paper-authors" title="${authors}">${authors}</p>
+                        <p class="text-xs text-gray-600 mt-1" title="${summary}">${summary || '暂无总结'}</p>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            ${tags.map(tag => `<span class="px-2 py-0.5 ${getTagColor(tag)} text-xs rounded-full">${tag}</span>`).join('')}
                         </div>
-                        <div class="text-right">
-                            <div class="text-xs text-gray-500">相关度: ${score}</div>
-                        </div>
+                    </div>
+                    <div class="ml-3 flex-shrink-0 text-right">
+                        <span class="paper-year">${year}</span>
+                        <div class="text-xs text-blue-600 mt-1">匹配度: ${score.toFixed(1)}</div>
                     </div>
                 `;
                 
-                container.appendChild(card);
+                container.appendChild(paperCard);
             });
 
             // 显示搜索结果
