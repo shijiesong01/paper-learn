@@ -13,7 +13,8 @@
         ],
         "file_address": "请输入./papers/之后的目录地址",
         "link": "请输入论文网络链接",
-        "abstract": "请输入论文摘要"
+        "abstract": "请输入论文摘要",
+        "summary": ""
       },
       "method": {
         "problem": "文章要解决什么问题",
@@ -71,6 +72,7 @@
         "file_address": "AI4Math\\Lean\\Yang 等 - LeanDojo Theorem Proving with Retrieval-Augmented.pdf",
         "link": "https://arxiv.org/abs/2306.15626",
         "abstract": "Large language models (LLMs) have shown promise in proving formal theorems using proof assistants such as Lean. However, existing methods are difficult to reproduce or build on, due to private code, data, and large compute requirements. This has created substantial barriers to research on machine learning methods for theorem proving. This paper removes these barriers by introducing LeanDojo: an open-source Lean playground consisting of toolkits, data, models, and benchmarks. LeanDojo extracts data from Lean and enables interaction with the proof environment programmatically. It contains fine-grained annotations of premises in proofs, providing valuable data for premise selection: a key bottleneck in theorem proving. Using this data, we develop ReProver (Retrieval-Augmented Prover): an LLM-based prover augmented with retrieval for selecting premises from a vast math library. It is inexpensive and needs only one GPU week of training. Our retriever leverages LeanDojo's program analysis capability to identify accessible premises and hard negative examples, which makes retrieval much more effective. Furthermore, we construct a new benchmark consisting of 98,734 theorems and proofs extracted from Lean's math library. It features challenging data split requiring the prover to generalize to theorems relying on novel premises that are never used in training. We use this benchmark for training and evaluation, and experimental results demonstrate the effectiveness of ReProver over non-retrieval baselines and GPT-4. We thus provide the first set of open-source LLM-based theorem provers without any proprietary datasets and release it under a permissive MIT license to facilitate further research.",
+        "summary": "LeanDojo实现数据提取、编程交互和构造benchmark；ReProver通过仅导入限定的前提和引入负例进行DPR训练，实现状态-前提->策略",
         "created_date": "2025/9/27",
         "last_updated": "2025/9/27"
       },
@@ -112,17 +114,24 @@
     "Lean Workbook: A large-scale Lean problem set formalized from natural language math problems": {
       "basic": {
         "title": "Lean Workbook: A large-scale Lean problem set formalized from natural language math problems",
-        "authors": "",
-        "journal_conference": "",
-        "year": "",
-        "month": "",
-        "citation_count": "",
+        "authors": "Huaiyuan Ying, Zijian Wu, Yihan Geng, Jiayu Wang, Dahua Lin, Kai Chen",
+        "journal_conference": "NeurIPS 2024",
+        "year": "2024",
+        "month": "7",
+        "citation_count": "51",
         "tags": [
-          ""
+          "theorem proving",
+          "LLM",
+          "Lean",
+          "synthetic data pipeline",
+          "formal-informal pairs"
         ],
         "file_address": "AI4Math\\Lean\\Ying 等 - 2025 - Lean Workbook A large-scale Lean problem set form.pdf",
-        "link": "",
-        "abstract": ""
+        "link": "https://arxiv.org/abs/2406.03847",
+        "abstract": "Large language models have demonstrated impressive capabilities across various natural language processing tasks, especially in solving mathematical problems. However, large language models are not good at math theorem proving using formal languages like Lean. A significant challenge in this area is the scarcity of training data available in these formal languages. To address this issue, we propose a novel pipeline that iteratively generates and filters synthetic data to translate natural language mathematical problems into Lean 4 statements, and vice versa. Our results indicate that the synthetic data pipeline can provide useful training data and improve the performance of LLMs in translating and understanding complex mathematical problems and proofs. Our final dataset contains about 57K formal-informal question pairs along with searched proof from the math contest forum and 21 new IMO questions. We open-source our code at https://github.com/InternLM/InternLM-Math and our data at https://huggingface.co/datasets/InternLM/Lean-Workbook.",
+        "summary": "",
+        "created_date": "2025/9/27",
+        "last_updated": "2025/9/27"
       },
       "method": {
         "problem": "",
@@ -146,7 +155,7 @@
         "strengths": "",
         "weaknesses": "",
         "open_source": {
-          "link": "",
+          "link": "https://github.com/InternLM/InternLM-Math; https://huggingface.co/datasets/internlm/Lean-Workbook",
           "code_available": true
         }
       },
@@ -155,10 +164,6 @@
         "inspiration": [
           ""
         ]
-      },
-      "metadata": {
-        "created_date": "",
-        "last_updated": ""
       }
     },
     "Autoformalizing Euclidean Geometry": {
@@ -174,7 +179,8 @@
         ],
         "file_address": "AI4Math\\AlphaGeometry\\Autoformalizing Euclidean Geometry.pdf",
         "link": "",
-        "abstract": ""
+        "abstract": "",
+        "summary": ""
       },
       "method": {
         "problem": "",
@@ -213,20 +219,29 @@
         "last_updated": ""
       }
     },
-    "GOEDEL-PROVER-V2: SCALING FORMAL THEOREM PROVING WITH SCAFFOLDED DATA SYNTHESIS AND SELF-CORRECTION": {
+    "Goedel-prover-v2: Scaling formal theorem proving with scaffolded data synthesis and self-correction": {
       "basic": {
-        "title": "GOEDEL-PROVER-V2: SCALING FORMAL THEOREM PROVING WITH SCAFFOLDED DATA SYNTHESIS AND SELF-CORRECTION",
-        "authors": "",
+        "title": "Goedel-prover-v2: Scaling formal theorem proving with scaffolded data synthesis and self-correction",
+        "authors": "Yong Lin, Shange Tang, Bohan Lyu, Ziran Yang, Jui-Hui Chung, Haoyu Zhao, Lai Jiang, Yihan Geng, Jiawei Ge, Jingruo Sun, Jiayun Wu, Jiri Gesi, Ximing Lu, David Acuna, Kaiyu Yang, Hongzhou Lin, Yejin Choi, Danqi Chen, Sanjeev Arora, Chi Jin",
         "journal_conference": "",
-        "year": "",
-        "month": "",
-        "citation_count": "",
+        "year": "2025",
+        "month": "8",
+        "citation_count": "3",
         "tags": [
-          ""
+          "theorem proving",
+          "expert iteration",
+          "reinforcement learning",
+          "data synthesis",
+          "self-correction",
+          "Lean",
+          "Model averaging"
         ],
         "file_address": "AI4Math\\Lean\\Lin 等 - 2025 - Goedel-Prover-V2 Scaling Formal Theorem Proving w.pdf",
-        "link": "",
-        "abstract": ""
+        "link": "https://arxiv.org/abs/2508.03613",
+        "abstract": "We introduce Goedel-Prover-V2, a series of open-source language models that set a new state-of-the-art in automated theorem proving. Built on the standard expert iteration and reinforcement learning pipeline, our approach incorporates three key innovations: (1) Scaffolded data synthesis: We generate synthetic tasks of increasing difficulty to train the model to master increasingly complex theorems; (2) Verifier-guided self-correction: We enable the model to iteratively revise its proofs by leveraging feedback from the Lean compiler; (3) Model averaging: We merge model checkpoints to mitigate the decrease in model output diversity in later stages of training. Our small model, Goedel-Prover-V2-8B, reaches 84.6% pass@32 on MiniF2F and outperforms DeepSeek-Prover-V2-671B under the same metric, despite being 80X smaller. Our flagship model, Goedel-Prover-V2-32B, achieves 88.1% on MiniF2F at pass@32 in standard mode and 90.4% in self-correction mode, outperforming prior SOTA by a large margin. Additionally, our flagship model solves 86 problems on PutnamBench at pass@184, securing the first place among open-source models on the leaderboard, surpassing DeepSeek-Prover-V2-671B's record of solving 47 problems by pass@1024 with a significantly smaller model size and compute budget. At the time of its release (July-August 2025), Goedel-Prover-V2 achieves the strongest overall performance among all open-source theorem provers. It also ranks among the top-performing models--including closed-source systems with publicly reported performance--under a constrained test-time compute budget. Our models, code, and data are released at https://github.com/Goedel-LM/Goedel-Prover-V2.",
+        "summary": "",
+        "created_date": "2025/9/27",
+        "last_updated": "2025/9/27"
       },
       "method": {
         "problem": "",
@@ -250,7 +265,7 @@
         "strengths": "",
         "weaknesses": "",
         "open_source": {
-          "link": "",
+          "link": "https://github.com/Goedel-LM/Goedel-Prover-V2",
           "code_available": true
         }
       },
@@ -259,26 +274,28 @@
         "inspiration": [
           ""
         ]
-      },
-      "metadata": {
-        "created_date": "",
-        "last_updated": ""
       }
     },
     "LEAN-GitHub: Compiling GitHub LEAN repositories for a versatile LEAN prover": {
       "basic": {
         "title": "LEAN-GitHub: Compiling GitHub LEAN repositories for a versatile LEAN prover",
-        "authors": "",
+        "authors": "Zijian Wu, Jiayu Wang, Dahua Lin, Kai Chen",
         "journal_conference": "",
-        "year": "",
-        "month": "",
-        "citation_count": "",
+        "year": "2024",
+        "month": "7",
+        "citation_count": "21",
         "tags": [
-          ""
+          "theorem proving",
+          "Lean",
+          "large dataset",
+          "fine-tuning"
         ],
         "file_address": "AI4Math\\Lean\\Wu 等 - 2024 - LEAN-GitHub Compiling GitHub LEAN repositories fo.pdf",
-        "link": "",
-        "abstract": ""
+        "link": "https://arxiv.org/abs/2407.17227",
+        "abstract": "Recently, large language models have presented promising results in aiding formal mathematical reasoning. However, their performance is restricted due to the scarcity of formal theorem-proving data, which requires additional effort to be extracted from raw formal language corpora. Meanwhile, a significant amount of human-written formal language corpora remains underutilized. To address this issue, we propose LEAN-GitHub, a dataset consisting of large-scale formal data extracted from almost all Lean 4 repositories on GitHub. After fine-tuning InternLM-math-plus on this dataset, our model achieved accuracies of 48.8% with a single pass and 54.5% with 64 passes on the Lean 4 miniF2F test, surpassing stateof-the-art method at 52%. And it also achieves state-of-the-art on two other Lean 4 benchmarks (ProofNet and Putnam) targeting different fields/levels of math. These results demonstrate that our proposed dataset is beneficial for formal reasoning on a wide range of math topics. We open-source our model at https://GitHub. com/InternLM/InternLM-Math and our data at https://huggingface.co/ datasets/InternLM/Lean-GitHub.",
+        "created_date": "2025/9/27",
+        "last_updated": "2025/9/27",
+        "summary": ""
       },
       "method": {
         "problem": "",
@@ -302,7 +319,7 @@
         "strengths": "",
         "weaknesses": "",
         "open_source": {
-          "link": "",
+          "link": "https://github.com/InternLM/InternLM-Math; https://huggingface.co/datasets/internlm/Lean-Github",
           "code_available": true
         }
       },
@@ -311,26 +328,30 @@
         "inspiration": [
           ""
         ]
-      },
-      "metadata": {
-        "created_date": "",
-        "last_updated": ""
       }
     },
     "Towards Large Language Models as Copilots for Theorem Proving in Lean": {
       "basic": {
         "title": "Towards Large Language Models as Copilots for Theorem Proving in Lean",
-        "authors": "",
-        "journal_conference": "",
-        "year": "",
-        "month": "",
-        "citation_count": "",
+        "authors": "Peiyang Song, Kaiyu Yang, Anima Anandkumar",
+        "journal_conference": "NeurIPS 2023",
+        "year": "2023",
+        "month": "10",
+        "citation_count": "44",
         "tags": [
-          ""
+          "theorem proving",
+          "LLM",
+          "Lean",
+          "autonomous mode",
+          "copilot",
+          "tools"
         ],
         "file_address": "AI4Math\\Lean\\Song 等 - Towards Large Language Models as Copilots for Theo.pdf",
-        "link": "",
-        "abstract": ""
+        "link": "https://mathai2023.github.io/papers/4.pdf",
+        "abstract": "Theorem proving is an important challenge for large language models (LLMs), as formal proofs can be checked rigorously by proof assistants such as Lean, leaving no room for hallucination. Existing LLM-based provers try to prove theorems in a fully autonomous mode without human intervention. In this mode, they struggle with novel and challenging theorems, for which human insights may be critical. In this paper, we explore LLMs as copilots that assist humans in proving theorems. We introduce Lean Copilot, a framework for running neural network inference in Lean. It enables programmers to build various LLM-based proof automation tools that integrate seamlessly into the workflow of Lean users. Using Lean Copilot, we build tools for suggesting proof steps and completing intermediate proof goals using LLMs. Experimental results demonstrate the effectiveness of our method in assisting humans compared to existing rule-based proof automation in Lean.",
+        "summary": "",
+        "created_date": "2025/9/27",
+        "last_updated": "2025/9/27"
       },
       "method": {
         "problem": "",
@@ -363,10 +384,6 @@
         "inspiration": [
           ""
         ]
-      },
-      "metadata": {
-        "created_date": "",
-        "last_updated": ""
       }
     },
     "Solving olympiad geometry without human demonstrations": {
@@ -382,7 +399,8 @@
         ],
         "file_address": "AI4Math\\AlphaGeometry\\Trinh 等 - 2024 - Solving olympiad geometry without human demonstrat.pdf",
         "link": "",
-        "abstract": ""
+        "abstract": "",
+        "summary": ""
       },
       "method": {
         "problem": "",
@@ -424,17 +442,24 @@
     "Seed-Prover: Deep and Broad Reasoning for Automated Theorem Proving": {
       "basic": {
         "title": "Seed-Prover: Deep and Broad Reasoning for Automated Theorem Proving",
-        "authors": "",
+        "authors": "Luoxin Chen, Jinming Gu, Liankai Huang, Wenhao Huang, Zhicheng Jiang, Allan Jie, Xiaoran Jin, Xing Jin, Chenggang Li, Kaijing Ma, Cheng Ren, Jiawei Shen, Wenlei Shi, Tong Sun, He Sun, Jiahui Wang, Siran Wang, Zhihong Wang, Chenrui Wei, Shufa Wei, Yonghui Wu, Yuchen Wu, Yihang Xia, Huajian Xin, Fan Yang, Huaiyuan Ying, Hongyi Yuan, Zheng Yuan, Tianyang Zhan, Chi Zhang, Yue Zhang, Ge Zhang, Tianyun Zhao, Jianqiu Zhao, Yichi Zhou, Thomas Hanwen Zhu",
         "journal_conference": "",
-        "year": "",
-        "month": "",
-        "citation_count": "",
+        "year": "2025",
+        "month": "7",
+        "citation_count": "2",
         "tags": [
-          ""
+          "theorem proving",
+          "LLM",
+          "Lean",
+          "reinforcement learning",
+          "geometry reasoning engine"
         ],
         "file_address": "AI4Math\\Lean\\Chen 等 - 2025 - Seed-Prover Deep and Broad Reasoning for Automate.pdf",
-        "link": "",
-        "abstract": ""
+        "link": "https://arxiv.org/abs/2507.23726",
+        "abstract": "LLMs have demonstrated strong mathematical reasoning abilities by leveraging reinforcement learning with long chain-of-thought, yet they continue to struggle with theorem proving due to the lack of clear supervision signals when solely using natural language. Dedicated domain-specific languages like Lean provide clear supervision via formal verification of proofs, enabling effective training through reinforcement learning. In this work, we propose \\textbf{Seed-Prover}, a lemma-style whole-proof reasoning model. Seed-Prover can iteratively refine its proof based on Lean feedback, proved lemmas, and self-summarization. To solve IMO-level contest problems, we design three test-time inference strategies that enable both deep and broad reasoning. Seed-Prover proves  of formalized past IMO problems, saturates MiniF2F, and achieves over 50\\% on PutnamBench, outperforming the previous state-of-the-art by a large margin. To address the lack of geometry support in Lean, we introduce a geometry reasoning engine \\textbf{Seed-Geometry}, which outperforms previous formal geometry engines. We use these two systems to participate in IMO 2025 and fully prove 5 out of 6 problems. This work represents a significant advancement in automated mathematical reasoning, demonstrating the effectiveness of formal verification with long chain-of-thought reasoning.",
+        "summary": "",
+        "created_date": "2025/9/27",
+        "last_updated": "2025/9/27"
       },
       "method": {
         "problem": "",
@@ -458,7 +483,7 @@
         "strengths": "",
         "weaknesses": "",
         "open_source": {
-          "link": "",
+          "link": "https://github.com/ByteDance-Seed/Seed-Prover",
           "code_available": true
         }
       },
@@ -467,26 +492,29 @@
         "inspiration": [
           ""
         ]
-      },
-      "metadata": {
-        "created_date": "",
-        "last_updated": ""
       }
     },
-    "LEANAGENT: LIFELONG LEARNING FOR FORMAL THEOREM PROVING": {
+    "Leanagent: Lifelong learning for formal theorem proving": {
       "basic": {
-        "title": "LEANAGENT: LIFELONG LEARNING FOR FORMAL THEOREM PROVING",
-        "authors": "",
+        "title": "Leanagent: Lifelong learning for formal theorem proving",
+        "authors": "Adarsh Kumarappan, Mo Tiwari, Peiyang Song, Robert Joseph George, Chaowei Xiao, Anima Anandkumar",
         "journal_conference": "",
-        "year": "",
-        "month": "",
-        "citation_count": "",
+        "year": "2024",
+        "month": "10",
+        "citation_count": "12",
         "tags": [
-          ""
+          "LLM",
+          "theorem proving",
+          "Lean",
+          "advanced mathematics",
+          "lifelong learning"
         ],
         "file_address": "AI4Math\\Lean\\Kumarappan 等 - 2025 - LeanAgent Lifelong Learning for Formal Theorem Pr.pdf",
-        "link": "",
-        "abstract": ""
+        "link": "https://arxiv.org/abs/2410.06209",
+        "abstract": "Large Language Models (LLMs) have been successful in mathematical reasoning tasks such as formal theorem proving when integrated with interactive proof assistants like Lean. Existing approaches involve training or fine-tuning an LLM on a specific dataset to perform well on particular domains, such as undergraduate-level mathematics. These methods struggle with generalizability to advanced mathematics. A fundamental limitation is that these approaches operate on static domains, failing to capture how mathematicians often work across multiple domains and projects simultaneously or cyclically. We present LeanAgent, a novel lifelong learning framework for formal theorem proving that continuously generalizes to and improves on ever-expanding mathematical knowledge without forgetting previously learned knowledge. LeanAgent introduces several key innovations, including a curriculum learning strategy that optimizes the learning trajectory in terms of mathematical difficulty, a dynamic database for efficient management of evolving mathematical knowledge, and progressive training to balance stability and plasticity. LeanAgent successfully generates formal proofs for 155 theorems across 23 diverse Lean repositories where formal proofs were previously missing, many from advanced mathematics. It performs significantly better than the static LLM baseline, proving challenging theorems in domains like abstract algebra and algebraic topology while showcasing a clear progression of learning from basic concepts to advanced topics. In addition, we analyze LeanAgent's superior performance on key lifelong learning metrics. LeanAgent achieves exceptional scores in stability and backward transfer, where learning new tasks improves performance on previously learned tasks. This emphasizes LeanAgent's continuous generalizability and improvement, explaining its superior theorem-proving performance.",
+        "created_date": "2025/9/27",
+        "last_updated": "2025/9/27",
+        "summary": ""
       },
       "method": {
         "problem": "",
@@ -519,26 +547,28 @@
         "inspiration": [
           ""
         ]
-      },
-      "metadata": {
-        "created_date": "",
-        "last_updated": ""
       }
     },
     "TheoremLlama: Transforming General-Purpose LLMs into Lean4 Experts": {
       "basic": {
         "title": "TheoremLlama: Transforming General-Purpose LLMs into Lean4 Experts",
-        "authors": "",
+        "authors": "Ruida Wang, Jipeng Zhang, Yizhen Jia, Rui Pan, Shizhe Diao, Renjie Pi, Tong Zhang",
         "journal_conference": "",
-        "year": "",
-        "month": "",
-        "citation_count": "",
+        "year": "2024",
+        "month": "10",
+        "citation_count": "31",
         "tags": [
-          ""
+          "theorem proving",
+          "Lean",
+          "LLM",
+          "Lean4 expert",
+          "curriculum learning"
         ],
         "file_address": "AI4Math\\Lean\\Wang 等 - 2024 - TheoremLlama Transforming General-Purpose LLMs in.pdf",
-        "link": "",
-        "abstract": ""
+        "link": "https://arxiv.org/abs/2407.03203",
+        "abstract": "Proving mathematical theorems using computer-verifiable formal languages like Lean significantly impacts mathematical reasoning. One approach to formal theorem proving involves generating complete proofs using Large Language Models (LLMs) based on Natural Language (NL) proofs. However, due to the scarcity of aligned NL and Formal Language (FL) theorem-proving data most modern LLMs exhibit suboptimal this http URL scarcity results in a paucity of methodologies for training LLMs and techniques to fully utilize their capabilities in composing formal proofs. To address these challenges, this paper proposes TheoremLlama, an end-to-end framework that trains a general-purpose LLM to be a Lean4 expert. TheoremLlama includes NL-FL dataset generation and bootstrapping method to obtain aligned dataset, curriculum learning and block training techniques to train the model, and iterative proof writing method to write Lean4 proofs that work together synergistically. Using the dataset generation method in TheoremLlama, we provide Open Bootstrapped Theorems (OBT), an NL-FL aligned and bootstrapped dataset. Our novel NL-FL bootstrapping method, where NL proofs are integrated into Lean4 code for training datasets, leverages the NL reasoning ability of LLMs for formal reasoning. The TheoremLlama framework achieves cumulative accuracies of 36.48% and 33.61% on MiniF2F-Valid and Test datasets respectively, surpassing the GPT-4 baseline of 22.95% and 25.41%. Our code, model checkpoints, and the generated dataset is published in GitHub",
+        "created_date": "2025/9/27",
+        "last_updated": "2025/9/27"
       },
       "method": {
         "problem": "",
@@ -562,7 +592,7 @@
         "strengths": "",
         "weaknesses": "",
         "open_source": {
-          "link": "",
+          "link": "https://github.com/RickySkywalker/TheoremLlama",
           "code_available": true
         }
       },
@@ -571,10 +601,6 @@
         "inspiration": [
           ""
         ]
-      },
-      "metadata": {
-        "created_date": "",
-        "last_updated": ""
       }
     }
   }

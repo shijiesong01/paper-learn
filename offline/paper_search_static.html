@@ -463,10 +463,13 @@
                     return 'bg-gray-100 text-gray-800';
                 };
 
+                const summary = paper.basic?.summary || '';
+
                 paperCard.innerHTML = `
                     <div class="flex-1 min-w-0">
                         <h3 class="paper-title" title="${title}">${title}</h3>
                         <p class="paper-authors" title="${authors}">${authors}</p>
+                        <p class="text-xs text-gray-600 mt-1" title="${summary}">${summary || '暂无总结'}</p>
                         <div class="flex flex-wrap gap-1 mt-1">
                             ${tags.map(tag => `<span class="px-2 py-0.5 ${getTagColor(tag)} text-xs rounded-full">${tag}</span>`).join('')}
                         </div>
@@ -652,9 +655,22 @@
                     <h3 class="paper-section-title">
                         <i class="fa fa-file-text text-orange-500"></i>摘要
                     </h3>
-                    <div class="paper-field-content">${basic.abstract}</div>
+                    <div class="paper-field-content">${formatTextWithLineBreaks(basic.abstract)}</div>
                 `;
                 container.appendChild(abstractSection);
+            }
+
+            // 总结部分
+            if (basic.summary) {
+                const summarySection = document.createElement('div');
+                summarySection.className = 'paper-section';
+                summarySection.innerHTML = `
+                    <h3 class="paper-section-title">
+                        <i class="fa fa-lightbulb text-yellow-500"></i>总结
+                    </h3>
+                    <div class="paper-field-content">${formatTextWithLineBreaks(basic.summary)}</div>
+                `;
+                container.appendChild(summarySection);
             }
         }
 
@@ -811,7 +827,10 @@
                     </div>
                     <div class="paper-field">
                         <div class="paper-field-label">代码链接</div>
-                        <div class="paper-field-content">${experiments.open_source.link ? `<a href="${experiments.open_source.link}" target="_blank" class="text-blue-600 hover:underline">${experiments.open_source.link}</a>` : '无'}</div>
+                        <div class="paper-field-content">${experiments.open_source.link ? 
+                            experiments.open_source.link.split(';').map(link => 
+                                `<a href="${link.trim()}" target="_blank" class="text-blue-600 hover:underline block mb-1">${link.trim()}</a>`
+                            ).join('') : '无'}</div>
                     </div>
                 `;
                 container.appendChild(openSourceSection);
