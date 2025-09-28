@@ -129,17 +129,17 @@
         "file_address": "AI4Math\\Lean\\Ying 等 - 2025 - Lean Workbook A large-scale Lean problem set form.pdf",
         "link": "https://arxiv.org/abs/2406.03847",
         "abstract": "Large language models have demonstrated impressive capabilities across various natural language processing tasks, especially in solving mathematical problems. However, large language models are not good at math theorem proving using formal languages like Lean. A significant challenge in this area is the scarcity of training data available in these formal languages. To address this issue, we propose a novel pipeline that iteratively generates and filters synthetic data to translate natural language mathematical problems into Lean 4 statements, and vice versa. Our results indicate that the synthetic data pipeline can provide useful training data and improve the performance of LLMs in translating and understanding complex mathematical problems and proofs. Our final dataset contains about 57K formal-informal question pairs along with searched proof from the math contest forum and 21 new IMO questions. We open-source our code at https://github.com/InternLM/InternLM-Math and our data at https://huggingface.co/datasets/InternLM/Lean-Workbook.",
-        "summary": "",
+        "summary": "提出了自动形式化自然语言问题来构建数据集的主动学习pipeline，开源了数据集并评估其性能",
         "created_date": "2025/9/27",
-        "last_updated": "2025/9/27"
+        "last_updated": "2025/9/28"
       },
       "method": {
-        "problem": "",
-        "limitations": "",
-        "core_idea": "",
+        "problem": "Weakness is data sparsity.\nAn initial step toward a better automatic theorem-proving model is to create enough high-quality formalized statements.",
+        "limitations": "1.the amount of data in MiniF2F is limited because formalizing problems requires significant labor from human experts.\n2.Though Mathlib is a very large dataset that contains the formalization of different math subjects in Lean, it mainly proves fundamental math theorems instead of contest-level problems.",
+        "core_idea": "1. We present Lean Workbook: an iterative autoformalization pipeline, together with a large-scale Lean problem set. \n(1)We train our autoformalization model based on active learning. At each turn, we use our model to translate natural language problems into formal statements and back-translate to natural language problems collected from the math contest forum. We use Lean compiler and Natural Language Inference (NLI) to check if it is a valid formalization.",
         "algorithm": "",
         "novelties": "",
-        "core_pic": ""
+        "core_pic": "Lean Workbook A large-scale Lean problem set formalized from natural language math problems.png"
       },
       "experiments": {
         "datasets": [
@@ -152,8 +152,8 @@
         "other_experiments": [
           ""
         ],
-        "strengths": "",
-        "weaknesses": "",
+        "strengths": "In this paper, we introduce an automatic pipeline that can translate contest-level math problems into Lean formal statements with high accuracy. Active learning proves its effectiveness in the data-sparse scenario.",
+        "weaknesses": "We find our proposed dataset has some similar problems which is hard to apply deduplication. Furthermore, our model is focused on contest-level problems during active learning which may not be appropriate to formalize other level math problems.",
         "open_source": {
           "link": "https://github.com/InternLM/InternLM-Math; https://huggingface.co/datasets/internlm/Lean-Workbook",
           "code_available": true
@@ -299,7 +299,7 @@
         "abstract": "Recently, large language models have presented promising results in aiding formal mathematical reasoning. However, their performance is restricted due to the scarcity of formal theorem-proving data, which requires additional effort to be extracted from raw formal language corpora. Meanwhile, a significant amount of human-written formal language corpora remains underutilized. To address this issue, we propose LEAN-GitHub, a dataset consisting of large-scale formal data extracted from almost all Lean 4 repositories on GitHub. After fine-tuning InternLM-math-plus on this dataset, our model achieved accuracies of 48.8% with a single pass and 54.5% with 64 passes on the Lean 4 miniF2F test, surpassing stateof-the-art method at 52%. And it also achieves state-of-the-art on two other Lean 4 benchmarks (ProofNet and Putnam) targeting different fields/levels of math. These results demonstrate that our proposed dataset is beneficial for formal reasoning on a wide range of math topics. We open-source our model at https://GitHub. com/InternLM/InternLM-Math and our data at https://huggingface.co/ datasets/InternLM/Lean-GitHub.",
         "summary": "提出Lean-GitHub数据集和构造过程，评估前删除状态重复数据（统一变量声明）训练InternLM2-StepProver等模型",
         "created_date": "2025/9/27",
-        "last_updated": "2025/9/27"
+        "last_updated": "2025/9/28"
       },
       "method": {
         "problem": "LLMs interacts with formalized proof assistants solving math problems remains unsatisfactory, primarily due to data scarcity.\nformal proof languages contain intermediate information not directly visible in their raw code",
@@ -520,9 +520,9 @@
         "file_address": "AI4Math\\Lean\\Kumarappan 等 - 2025 - LeanAgent Lifelong Learning for Formal Theorem Pr.pdf",
         "link": "https://arxiv.org/abs/2410.06209",
         "abstract": "Large Language Models (LLMs) have been successful in mathematical reasoning tasks such as formal theorem proving when integrated with interactive proof assistants like Lean. Existing approaches involve training or fine-tuning an LLM on a specific dataset to perform well on particular domains, such as undergraduate-level mathematics. These methods struggle with generalizability to advanced mathematics. A fundamental limitation is that these approaches operate on static domains, failing to capture how mathematicians often work across multiple domains and projects simultaneously or cyclically. We present LeanAgent, a novel lifelong learning framework for formal theorem proving that continuously generalizes to and improves on ever-expanding mathematical knowledge without forgetting previously learned knowledge. LeanAgent introduces several key innovations, including a curriculum learning strategy that optimizes the learning trajectory in terms of mathematical difficulty, a dynamic database for efficient management of evolving mathematical knowledge, and progressive training to balance stability and plasticity. LeanAgent successfully generates formal proofs for 155 theorems across 23 diverse Lean repositories where formal proofs were previously missing, many from advanced mathematics. It performs significantly better than the static LLM baseline, proving challenging theorems in domains like abstract algebra and algebraic topology while showcasing a clear progression of learning from basic concepts to advanced topics. In addition, we analyze LeanAgent's superior performance on key lifelong learning metrics. LeanAgent achieves exceptional scores in stability and backward transfer, where learning new tasks improves performance on previously learned tasks. This emphasizes LeanAgent's continuous generalizability and improvement, explaining its superior theorem-proving performance.",
+        "summary": "",
         "created_date": "2025/9/27",
-        "last_updated": "2025/9/27",
-        "summary": ""
+        "last_updated": "2025/9/27"
       },
       "method": {
         "problem": "",
