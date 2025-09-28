@@ -353,17 +353,17 @@
         "file_address": "AI4Math\\Lean\\Song 等 - Towards Large Language Models as Copilots for Theo.pdf",
         "link": "https://mathai2023.github.io/papers/4.pdf",
         "abstract": "Theorem proving is an important challenge for large language models (LLMs), as formal proofs can be checked rigorously by proof assistants such as Lean, leaving no room for hallucination. Existing LLM-based provers try to prove theorems in a fully autonomous mode without human intervention. In this mode, they struggle with novel and challenging theorems, for which human insights may be critical. In this paper, we explore LLMs as copilots that assist humans in proving theorems. We introduce Lean Copilot, a framework for running neural network inference in Lean. It enables programmers to build various LLM-based proof automation tools that integrate seamlessly into the workflow of Lean users. Using Lean Copilot, we build tools for suggesting proof steps and completing intermediate proof goals using LLMs. Experimental results demonstrate the effectiveness of our method in assisting humans compared to existing rule-based proof automation in Lean.",
-        "summary": "",
+        "summary": "introduce a general framework, Lean Copilot, and two tools (suggest_tactics and LLM-aesop) for LLMs to assist humans in proving Lean theorems.",
         "created_date": "2025/9/27",
         "last_updated": "2025/9/27"
       },
       "method": {
-        "problem": "",
-        "limitations": "",
-        "core_idea": "",
+        "problem": "LLMs can make proof assistants easier to use by improving automation.\ncurrent LLMs often fail to prove theorems.\nAI can also assist human mathematicians in theorem proving not proving only by AI.",
+        "limitations": "existing LLM-based provers cannot readily assist humans. They are trained and evaluated following standard practices in machine learning but do not integrate into the workflow of proof assistants.",
+        "core_idea": "We introduce Lean Copilot: a framework for developing LLM-based proof automation in Lean.\n    First, we convert the model into a platform-independent format, ONNX(Open Neural Network Exchange)\n    Then, we run it as a shared library through Lean’s foreign function interface (FFI).It works out of the box.\nWe use Lean Copilot to build two tools for assisting humans in theorem proving: (1) suggest_tactics; (2) LLM-aesop",
         "algorithm": "",
         "novelties": "",
-        "core_pic": ""
+        "core_pic": "Towards Large Language Models as Copilots for Theorem Proving in Lean.png"
       },
       "experiments": {
         "datasets": [
