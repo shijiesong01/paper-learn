@@ -297,30 +297,33 @@
         "file_address": "AI4Math\\Lean\\Wu 等 - 2024 - LEAN-GitHub Compiling GitHub LEAN repositories fo.pdf",
         "link": "https://arxiv.org/abs/2407.17227",
         "abstract": "Recently, large language models have presented promising results in aiding formal mathematical reasoning. However, their performance is restricted due to the scarcity of formal theorem-proving data, which requires additional effort to be extracted from raw formal language corpora. Meanwhile, a significant amount of human-written formal language corpora remains underutilized. To address this issue, we propose LEAN-GitHub, a dataset consisting of large-scale formal data extracted from almost all Lean 4 repositories on GitHub. After fine-tuning InternLM-math-plus on this dataset, our model achieved accuracies of 48.8% with a single pass and 54.5% with 64 passes on the Lean 4 miniF2F test, surpassing stateof-the-art method at 52%. And it also achieves state-of-the-art on two other Lean 4 benchmarks (ProofNet and Putnam) targeting different fields/levels of math. These results demonstrate that our proposed dataset is beneficial for formal reasoning on a wide range of math topics. We open-source our model at https://GitHub. com/InternLM/InternLM-Math and our data at https://huggingface.co/ datasets/InternLM/Lean-GitHub.",
+        "summary": "提出Lean-GitHub数据集和构造过程，评估前删除状态重复数据（统一变量声明）训练InternLM2-StepProver等模型",
         "created_date": "2025/9/27",
-        "last_updated": "2025/9/27",
-        "summary": ""
+        "last_updated": "2025/9/27"
       },
       "method": {
-        "problem": "",
-        "limitations": "",
-        "core_idea": "",
-        "algorithm": "",
+        "problem": "LLMs interacts with formalized proof assistants solving math problems remains unsatisfactory, primarily due to data scarcity.\nformal proof languages contain intermediate information not directly visible in their raw code",
+        "limitations": "Although auto-formalization enables the synthesis of more aligned data for training, the quality and diversity of their data remain constrained and thus cannot substitute for human-crafted data.",
+        "core_idea": "1.we propose LEAN-GitHub: a large-scale Lean dataset that leverages open-source Lean repositories on GitHub serving as a crucial complement Mathlib dataset. We develop a scalable pipeline and provide a solution to the state duplication problem common in tree proof search methods.\n2. we train InternLM2-StepProver with our dataset included.",
+        "algorithm": "1.Lean-GitHub\nbuilt upon 147 Lean 4 repositories available on the web.consisting of 28,597 theorems with formal proofs and 218,866 tactics from 2133 files. The dataset has 0.138B tokens.\n1.1 Data Construction\n(1)Selection of the repositories: Select -> modify\n(2)Source Code Compilation: called the underlying leanc compiler to compile the source code\n(3)Extraction Details\n1.2 Dataset Statisitcs\nTo estimate the quality our dataset, we provide several quantitative measures and compare them with recent and similar existing datasets；and develop the InternLM2-StepProver model that utilizes the LEAN-GitHub.",
         "novelties": "",
-        "core_pic": ""
+        "core_pic": "LEAN-GitHub Compiling GitHub LEAN repositories for a versatile LEAN prover.png"
       },
       "experiments": {
         "datasets": [
-          ""
+          "miniF2F",
+          "ProofNet",
+          "PutnamBench"
         ],
         "metrics": [
-          ""
+          "Automatically prove of success rate",
+          "Pass@1"
         ],
-        "results": "",
+        "results": "Experiment: Our training set mainly consists of three parts(LEAN-GitHub, Lean’s Mathlib, Lean Workbook), other models were trained with different training set settings for ablation.\nWe follow the proofstep objective used by GPT-f, which generating a PROOFSTEP (a Lean tactic) given a GOAL (current Lean tactic state) and the current DECLARATION (the Lean theorem name to be proved)\nState De-duplication: it is common for multiple intermediate states with essentially identical hypotheses but distinct names to emerge during the search process, we modified Lean so that for each intermediate state (internally stored as metavariables and local declarations), their hypotheses are renamed based on their internal storage order.\nResults: miniF2F(valid 63.9%，test 54.5%)；ProofNet(Pass@1 18.1%); PutnamBench(solving 5 problems)",
         "other_experiments": [
-          ""
+          "1.Data source ablation\n\n2.The effectiveness of multiple inferences"
         ],
-        "strengths": "",
+        "strengths": "1.we introduce LEAN-GitHub—a dataset comprising a large-scale collection of formal data extracted from open Lean 4 repositories on GitHub, which includes 28,597 theorems and 218,866 tactics.\n2.We then train InternLM2-StepProver using this dataset, which is the state-of-the-art model performance on Lean 4 formal reasoning.We also train various models with LEAN-GitHub.",
         "weaknesses": "",
         "open_source": {
           "link": "https://github.com/InternLM/InternLM-Math; https://huggingface.co/datasets/internlm/Lean-Github",
@@ -330,7 +333,7 @@
       "my_study": {
         "reproduction": "",
         "inspiration": [
-          ""
+          "通过挖掘数据集创建的工程和细节，让所有模型可以得到性能提升。"
         ]
       }
     },
@@ -369,7 +372,7 @@
           "Mathematics in Lean"
         ],
         "metrics": [
-          "Automatically prove the success rate",
+          "Automatically prove of success rate",
           "Prove with manual assistance steps"
         ],
         "results": "Experiments: LLM-aesop compared to aesop in two settings: (1) proving theorems autonomously and (2) assisting humans in theorem proving. In addition, we (3)compare LLM-aesop with suggest_tactics.\nAfter each tactic, we try to prove the remaining goals using an automated tool: (1)LLM-aesop, aesop, or (2)suggest_tactics.\n\nResults：1.Theorems proved autonomously：LLM-aesop can prove 64% (32 out of 50); \n2.human-entered tactics: LLM-aesop only requires an average of 1.02 manually-entered tactics;",
