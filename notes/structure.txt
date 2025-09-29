@@ -11,3 +11,5 @@ AI4Math
   AlphaGeometry
     Autoformalizing Euclidean Geometry
     Solving olympiad geometry without human demonstrations
+  TheoremProving
+    A Survey on Deep Learning for Theorem Proving

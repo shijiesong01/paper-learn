@@ -137,7 +137,7 @@
         "problem": "Weakness is data sparsity.\nAn initial step toward a better automatic theorem-proving model is to create enough high-quality formalized statements.",
         "limitations": "1.the amount of data in MiniF2F is limited because formalizing problems requires significant labor from human experts.\n2.Though Mathlib is a very large dataset that contains the formalization of different math subjects in Lean, it mainly proves fundamental math theorems instead of contest-level problems.",
         "core_idea": "1. We present Lean Workbook: an iterative autoformalization pipeline, together with a large-scale Lean problem set. \n(1)We train our autoformalization model based on active learning. At each turn, we use our model to translate natural language problems into formal statements and back-translate to natural language problems collected from the math contest forum. We use Lean compiler and Natural Language Inference (NLI) to check if it is a valid formalization.",
-        "algorithm": "",
+        "algorithm": "1.First-round pipeline\nfirst collect Lean 4 formal statements with their corresponding natural language questions from MiniF2F and ProofNet. The proof will be declared using \":= sorry\"",
         "novelties": "",
         "core_pic": "Lean Workbook A large-scale Lean problem set formalized from natural language math problems.png"
       },
@@ -248,10 +248,10 @@
         "last_updated": "2025/9/27"
       },
       "method": {
-        "problem": "",
-        "limitations": "",
-        "core_idea": "",
-        "algorithm": "",
+        "problem": "Automated theorem proving demands a completely rigorous logical flow, which poses an exceptional challenge for AI systems.\nFor example, DeepMind’s AlphaProof、AlphaGeometry、DeepSeek-Prover-V2、Kimina-Prover have achieved impressive results on benchmarks like MiniF2F (Zheng et al., 2021) and PutnamBench.",
+        "limitations": "These successes, however, typically depend on massive models (e.g., DeepSeekProver-V2 has 671B parameters) or computationally intensive inference (e.g., the concurrent work Seed-Prover (Chen et al., 2025)), which involves complex search algorithms and enormous search budgets.",
+        "core_idea": "We introduce Goedel-Prover-V2. The models are capable of generating whole proof and leveraging verifier feedback for iterative self-correction.\nThe key to these gains lies in novel design across the framework, data, and training pipelines:\n(1)Verifier-guided self-correction: Framework-wise, we incorporate feedback from the Lean compiler (verifier) into the model input to enable the error-correction ability of our theorem prover (verifier-guided self-correction).\n(2)Scaffolded data synthesis: we augment our training statement set through scaffolded data synthesis.\n(3)to mitigate the decrease in model output diversity that can occur in the later stages of training.",
+        "algorithm": "1.chain of thought and self-correction\na.long-chain-of-thought reasoning capabilities of large models (Wang et al., 2025; Ren et al., 2025).\nb.integrating the verifier’s error messages or tactic verification outcomes into proof generation significantly improves synthesis accuracy (First et al., 2023).\n->Our framework: after an initial proof attempt, verification failures are parsed and communicated back into the model as corrective guidance. The model then generates proof repairs, leading to an iterative self-correction process.\n2.curating formal statements\n(1)formalizer training\ntrain our formalizer using the standard expert iteration pipeline(Lean syntax checks and semantic evaluation), if pass then next iteration of SFT.\nInitialize expert iteration: prompt Claude Sonnet 4 to generate.\n(2)Formal-based scaffolded data synthesis\nWhen the prover fails to find a proof, still leverage the proof attempt to generate simpler, related problems.\n(3)Informal-based scaffolded data synthesis\nFor a given problem, we prompt an LLM (Qwen3-32B) to generate simpler/sub-problems if it is unsolved, or harder variants if it is already solved. \nLLM attempt a natural language solution, (use an LLM-based filter that assesses each statement for correctness and difficulty, where trivial or mathematically incorrect statements are discarded) then formalized into Lean by the formalization pipeline\n3. Training algorithms",
         "novelties": "",
         "core_pic": ""
       },
@@ -601,6 +601,57 @@
         "weaknesses": "",
         "open_source": {
           "link": "https://github.com/RickySkywalker/TheoremLlama",
+          "code_available": true
+        }
+      },
+      "my_study": {
+        "reproduction": "",
+        "inspiration": [
+          ""
+        ]
+      }
+    },
+    "A Survey on Deep Learning for Theorem Proving": {
+      "basic": {
+        "title": "A Survey on Deep Learning for Theorem Proving",
+        "authors": "",
+        "journal_conference": "",
+        "year": "",
+        "month": "",
+        "citation_count": "",
+        "tags": [
+          ""
+        ],
+        "file_address": "AI4Math\\TheoremProving\\Li 等 - 2024 - A Survey on Deep Learning for Theorem Proving.pdf",
+        "link": "",
+        "abstract": "",
+        "summary": "",
+        "created_date": "2025/9/29",
+        "last_updated": "2025/9/29"
+      },
+      "method": {
+        "problem": "",
+        "limitations": "",
+        "core_idea": "",
+        "algorithm": "",
+        "novelties": "",
+        "core_pic": ""
+      },
+      "experiments": {
+        "datasets": [
+          ""
+        ],
+        "metrics": [
+          ""
+        ],
+        "results": "",
+        "other_experiments": [
+          ""
+        ],
+        "strengths": "",
+        "weaknesses": "",
+        "open_source": {
+          "link": "",
           "code_available": true
         }
       },
